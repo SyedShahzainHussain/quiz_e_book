@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:quiz_e_book/data/network/base_api_services.dart';
 import 'package:quiz_e_book/data/network/network_api_services.dart';
 import 'package:quiz_e_book/model/login_model.dart';
-import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/resources/urls/app_url.dart';
 import 'package:quiz_e_book/utils/utils.dart';
@@ -49,7 +47,6 @@ class LoginViewModel with ChangeNotifier {
       Utils.flushBarErrorMessage(
         "User Login",
         context,
-       
       );
       if (kDebugMode) {
         print(value.toString());

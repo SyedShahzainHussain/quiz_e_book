@@ -55,7 +55,7 @@ class PositionHolderWidget extends StatelessWidget {
                       height: context.screenheight * .15,
                       width: context.screenwidth * .3,
                       decoration: const BoxDecoration(
-                          color: AppColors.bgColor4,
+                          color: AppColors.white,
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(50.0),
                               topRight: Radius.circular(50.0))),

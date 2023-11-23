@@ -3,6 +3,17 @@ import 'package:quiz_e_book/model/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthViewModel with ChangeNotifier {
+
+
+  LoginData? _loginData;
+
+  LoginData? get loginData => _loginData;
+
+  Future<void> fetchLoginData() async {
+    _loginData = await getUser();
+    notifyListeners();
+  }
+
   Future<bool> saveUser(LoginData loginData) async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString("token", loginData.token.toString());

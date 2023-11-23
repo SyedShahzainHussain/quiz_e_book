@@ -17,4 +17,6 @@ class RouteName {
   static const ebookScreen = '/e_book_screen';
   // * pdf_view_screen
   static const pdfviewScreen = '/pdf_view_screen';
+  // * reset_view_screen
+  static const resetScreen = '/reset_view_screen';
 }

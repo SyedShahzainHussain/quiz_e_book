@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
@@ -25,14 +26,17 @@ class Ebook extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   Navigator.pushNamed(context, RouteName.pdfviewScreen);
                 },
                 child: Column(
                   children: [
                     ListTile(
-                      leading: Image.asset(
-                        "assets/images/pdf.png",
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVN3qxUF4zGyjo-6wzHlPIXGBUv6RKhCixSxGBMfLiKKb6oKCHzxbFI106eitjMF9wmtc&usqp=CAU",
+                        ),
                       ),
                       title: const Text(
                         "Science",
@@ -43,6 +47,14 @@ class Ebook extends StatelessWidget {
                           maxLines: 1,
                           style:
                               const TextStyle(overflow: TextOverflow.ellipsis)),
+                      trailing: IconButton(
+                          onPressed: () async{
+                          await  Share.share("PDf");
+                          },
+                          icon: const Icon(
+                            Icons.share,
+                            color: AppColors.black,
+                          )),
                     ),
                     const Divider(
                       color: AppColors.bgColor3,
@@ -84,7 +96,7 @@ class _PdfViewScreenState extends State<PdfViewScreen> {
                 onPressed: () {
                   _pdfViewerState.currentState!.openBookmarkView();
                 },
-                icon: const Icon(Icons.zoom_out)),
+                icon: const Icon(Icons.bookmark)),
             IconButton(
                 onPressed: () {
                   _pdfViewerController.zoomLevel = 1.25;
@@ -99,7 +111,7 @@ class _PdfViewScreenState extends State<PdfViewScreen> {
         ),
         body: SfPdfViewer.file(
           File(
-              '/data/user/0/com.example.quiz_e_book/cache/file_picker/البرھان بائیکاٹ لسٹ.pdf'),
+              '/data/user/0/com.example.quiz_e_book/cache/file_picker/البرھان بائیکاٹ لسٹ .pdf'),
           controller: _pdfViewerController,
           key: _pdfViewerState,
         ));

@@ -6,6 +6,7 @@ import 'package:quiz_e_book/view/home_screen/home_screen.dart';
 import 'package:quiz_e_book/view/login_screen/login_screen.dart';
 import 'package:quiz_e_book/view/otp_screen.dart/otp_screen.dart';
 import 'package:quiz_e_book/view/registered_screen/registered_screen.dart';
+import 'package:quiz_e_book/view/reset_password_screen/reset_password_screen.dart';
 import 'package:quiz_e_book/view/splash_screen/splash_screen.dart';
 import 'package:quiz_e_book/view/user_profile_screen.dart/user_profile_screen.dart';
 
@@ -27,7 +28,11 @@ class AppRoute {
         return MaterialPageRoute(builder: (context) => const ForgotPassword());
       // * otp route screen
       case RouteName.otpScreen:
-        return MaterialPageRoute(builder: (context) => const OtpScreen());
+        final String email = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (context) => OtpScreen(
+                  email: email,
+                ));
       // * home route screen
       case RouteName.homeScreen:
         return MaterialPageRoute(builder: (context) => const HomeScreen());
@@ -41,6 +46,11 @@ class AppRoute {
       // * pdfview route screen
       case RouteName.pdfviewScreen:
         return MaterialPageRoute(builder: (context) => const PdfViewScreen());
+      // * reset route screen
+      case RouteName.resetScreen:
+        final Map<String,dynamic> data = settings.arguments as Map<String,dynamic>;
+        return MaterialPageRoute(
+            builder: (context) =>  ResetPasswordScreen(data: data,));
       // * default route screen
       default:
         return MaterialPageRoute(

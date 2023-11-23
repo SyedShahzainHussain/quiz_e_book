@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
-import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {

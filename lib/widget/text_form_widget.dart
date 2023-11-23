@@ -9,6 +9,8 @@ class Textformwidget extends StatelessWidget {
   final FocusNode? nextFocusNode;
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
+  final Widget? sufficIcon;
+  final bool obsecure;
   const Textformwidget({
     super.key,
     required this.onSave,
@@ -18,13 +20,16 @@ class Textformwidget extends StatelessWidget {
     this.focusNode,
     this.nextFocusNode,
     this.textInputAction,
-    this.keyboardType
+    this.keyboardType,
+    this.sufficIcon,
+    this.obsecure =false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      keyboardType:keyboardType ,
+      obscureText: obsecure,
+      keyboardType: keyboardType,
       focusNode: focusNode,
       onFieldSubmitted: (_) =>
           FocusScope.of(context).requestFocus(nextFocusNode),
@@ -32,6 +37,7 @@ class Textformwidget extends StatelessWidget {
       textInputAction: textInputAction,
       onSaved: onSave,
       decoration: InputDecoration(
+        suffixIcon: sufficIcon,
         prefixIcon: icon,
         hintText: title,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),

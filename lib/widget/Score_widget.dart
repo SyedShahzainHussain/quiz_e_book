@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 
 class ScoreWidget extends StatefulWidget {
@@ -20,7 +21,7 @@ class _ScoreWidgetState extends State<ScoreWidget> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       double minScrollExtent1 = scrollController.position.minScrollExtent;
       double maxScrollExtent1 = scrollController.position.maxScrollExtent;
-      animatedTo(maxScrollExtent1, minScrollExtent1, maxScrollExtent1, 25);
+      animatedTo(maxScrollExtent1, minScrollExtent1, maxScrollExtent1, 15);
     });
   }
 
@@ -64,7 +65,7 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                     margin: const EdgeInsets.all(12.0),
                     padding: const EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
-                      color: AppColors.bgColor4,
+                      color: AppColors.bgColor,
                       borderRadius: BorderRadius.circular(12.0),
                       border: const GradientBoxBorder(
                         gradient: LinearGradient(colors: [
@@ -80,15 +81,28 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                           backgroundColor: AppColors.bgColor,
                           backgroundImage:
                               NetworkImage(winner[index]['image'])),
-                      trailing: Text(winner[index]['totalScore'],
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(winner[index]['totalScore'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
                                     fontWeight: FontWeight.bold,
+                                    color: AppColors.white,
                                   )),
+                          Image.asset(
+                            "assets/images/coin.gif",
+                            width: context.screenwidth * .05,
+                          )
+                        ],
+                      ),
                       title: Text(winner[index]['username'],
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     fontWeight: FontWeight.bold,
+                                    color: AppColors.white,
                                   )),
                     ));
               })),

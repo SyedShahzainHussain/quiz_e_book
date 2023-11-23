@@ -37,7 +37,7 @@ class Utils {
                 end: Alignment.centerLeft,
                 colors: [
                   AppColors.bgColor,
-                  AppColors.bgColor2,
+                  AppColors.bgColor,
                   AppColors.bgColor3,
                   AppColors.bgColor4,
                 ],

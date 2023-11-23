@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/routes.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:quiz_e_book/viewModel/forgot_password_view_model/forgot_password_view_model.dart';
 import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
 import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
 
 // ! package
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_e_book/viewModel/reset_view_model.dart/reset_view_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,12 @@ class MyApp extends StatelessWidget {
         ),
          ChangeNotifierProvider(
           create: (context) => AuthViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ForgotPasswordViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ResetViewModel(),
         ),
       ],
       child: MaterialApp(

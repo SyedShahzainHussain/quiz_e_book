@@ -3,13 +3,17 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen({super.key});
+  final String email;
+  const OtpScreen({super.key, required this.email});
 
   @override
   Widget build(BuildContext context) {
+    String? verificationCode;
+
     return Scaffold(
         appBar: AppBar(
             title: const Text(
@@ -68,30 +72,30 @@ class OtpScreen extends StatelessWidget {
                       focusedBorderColor: AppColors.bgColor,
                       enabledBorderColor: AppColors.bgColor4,
                       showFieldAsBox: true,
-                      onCodeChanged: (String code) {
-                        //handle validation or checks here
-                        // if(code.isEmpty){
-                    
-                        // }
-                        print(code);
-                      },
-                      //runs when every textfield is filled
-                      onSubmit: (String verificationCode) {
+
+                      onSubmit: (String verificationCodes) {
                         showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text("Verification Code"),
                                 content:
-                                    Text('Code entered is $verificationCode'),
+                                    Text('Code entered is $verificationCodes'),
                               );
                             });
+                        verificationCode = verificationCodes;
                       }, // end onSubmit
                     ),
                   ),
                   Buttonwidget(
                     text: "Send",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, RouteName.resetScreen,
+                          arguments: {
+                            "email": email,
+                            "otp": verificationCode,
+                          });
+                    },
                   ),
                 ],
               )

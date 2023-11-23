@@ -31,6 +31,7 @@ class LoginScreen extends StatelessWidget {
 
       if (validate) {
         form.currentState!.save();
+        
         final body = {
           "email": emailController,
           "password": passwordController,
