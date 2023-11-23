@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 
 class UserProfileScreen extends StatelessWidget {
@@ -9,11 +11,11 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final data = context.read<AuthViewModel>();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile Screen"),
       ),
-      
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -92,8 +94,10 @@ class UserProfileScreen extends StatelessWidget {
               Buttonwidget(
                   text: "Logout",
                   onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, RouteName.loginScreen, (route) => false);
+                   data.remove().then((value) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, RouteName.loginScreen, (route) => false);
+                    });
                   })
             ]),
       ),

@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dob_input_field/dob_input_field.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_e_book/data/services/permission/media_services.dart';
 
 // ! file
@@ -16,6 +18,9 @@ import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.
 import 'package:quiz_e_book/extension/sizedbox_extension/sizedbox_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+
+import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
+
 import 'package:quiz_e_book/widget/button_widget.dart';
 import 'package:quiz_e_book/widget/text_form_widget.dart';
 
@@ -41,16 +46,19 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
   String? dateOfBirth;
   File? image;
 
-  void safe() {
+  void safe() async {
     final validate = form.currentState!.validate();
     if (validate && image != null) {
       form.currentState!.save();
-      if (kDebugMode) {
-        print(emailController.toString());
-        print(passwordController.toString());
-        print(usernameController.toString());
-        print(dateOfBirth.toString());
-      }
+
+      context.read<RegisteredViewModel>().registerApi(
+            usernameController.toString(),
+            emailController.toString(),
+            passwordController.toString(),
+            dateOfBirth.toString(),
+            image,
+            context,
+          );
     }
   }
 
@@ -212,14 +220,13 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                           title: "Email",
                         ),
                         10.height,
-                       
                         ValueListenableBuilder(
-
                           valueListenable: obsecureText,
                           builder: (context, value, _) => TextFormField(
                             focusNode: passwordnode,
                             textInputAction: TextInputAction.next,
-                            onFieldSubmitted:(_)=> FocusScope.of(context).nextFocus(),
+                            onFieldSubmitted: (_) =>
+                                FocusScope.of(context).nextFocus(),
                             onSaved: (value) {
                               passwordController = value;
                             },
@@ -257,9 +264,8 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                             ),
                           ),
                         ),
-                           10.height,
-                         DOBInputField(
-                          
+                        10.height,
+                        DOBInputField(
                           fieldLabelText: "Date of birth",
                           firstDate: DateTime(1900),
                           showLabel: true,
@@ -269,7 +275,6 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                                 '${DateTime(value.year, value.month, value.day)}';
                           },
                           inputDecoration: InputDecoration(
-                            
                             prefixIcon: const Padding(
                               padding: EdgeInsets.all(12.0),
                               child: FaIcon(FontAwesomeIcons.calendar),
@@ -281,12 +286,15 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                         SizedBox(
                           height: context.screenheight * .05,
                         ),
-                        Buttonwidget(
-                          text: "Register",
-                          onTap: () {
-                            // Navigator.pushNamed(context, RouteName.otpScreen);
-                            safe();
-                          },
+                        Consumer<RegisteredViewModel>(
+                          builder: (context, value, child) => Buttonwidget(
+                            isLoading: value.isLoading,
+                            text: "Register",
+                            onTap: () {
+                              // Navigator.pushNamed(context, RouteName.otpScreen);
+                              safe();
+                            },
+                          ),
                         ),
                         SizedBox(
                           height: context.screenheight * .05,

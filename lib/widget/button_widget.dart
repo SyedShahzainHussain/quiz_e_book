@@ -1,17 +1,17 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/utils/utils.dart';
 
 class Buttonwidget extends StatelessWidget {
   final String text;
   final Function()? onTap;
-  const Buttonwidget({
-    super.key,
-    required this.text,
-    required this.onTap,
-
-  });
+  final bool isLoading;
+  const Buttonwidget(
+      {super.key,
+      required this.text,
+      required this.onTap,
+      this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +32,16 @@ class Buttonwidget extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.centerRight,
             )),
-        child: Text(
-          text,
-          style: GoogleFonts.poppins(
-              color: AppColors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w500),
-        ),
+        child: isLoading
+            ? Utils.showLoadingSpinner()
+            : Text(
+                text,
+                style: GoogleFonts.poppins(
+                  color: AppColors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
       ),
     );
   }

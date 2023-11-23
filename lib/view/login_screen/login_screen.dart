@@ -1,15 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
 // ! package
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 // ! file
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/extension/sizedbox_extension/sizedbox_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 import 'package:quiz_e_book/widget/text_form_widget.dart';
 
@@ -25,12 +26,16 @@ class LoginScreen extends StatelessWidget {
     String? emailController;
     String? passwordController;
 
-    void safe() {
+    void safe() async {
       final validate = form.currentState!.validate();
+
       if (validate) {
         form.currentState!.save();
-        log(emailController.toString());
-        log(passwordController.toString());
+        final body = {
+          "email": emailController,
+          "password": passwordController,
+        };
+        context.read<LoginViewModel>().loginApi(body, context);
       }
     }
 
@@ -94,7 +99,9 @@ class LoginScreen extends StatelessWidget {
                             return null;
                           },
                           icon: const Icon(Icons.email_rounded),
-                          onSave: (value) {},
+                          onSave: (value) {
+                            emailController = value;
+                          },
                           title: "Email",
                         ),
                         10.height,
@@ -104,11 +111,14 @@ class LoginScreen extends StatelessWidget {
                             textInputAction: TextInputAction.done,
                             focusNode: passwordnode,
                             obscureText: obsecureText.value,
+                            onSaved: (value) {
+                              passwordController = value;
+                            },
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return "Please enter password";
-                              } else if (value.length < 6) {
-                                return "Password must be at least 6 characters long";
+                              } else if (value.length < 4) {
+                                return "Password must be at least 4 characters long";
                               }
                               return null;
                             },
@@ -140,12 +150,15 @@ class LoginScreen extends StatelessWidget {
                         SizedBox(
                           height: context.screenheight * .05,
                         ),
-                        Buttonwidget(
-                          text: "Login",
-                          onTap: () {
-                            // safe();
-                            Navigator.pushNamed(context, RouteName.homeScreen);
-                          },
+                        Consumer<LoginViewModel>(
+                          builder: (context, value, child) => Buttonwidget(
+                            isLoading: value.isLoading,
+                            text: "Login",
+                            onTap: () {
+                              safe();
+                              // Navigator.pushNamed(context, RouteName.homeScreen);
+                            },
+                          ),
                         ),
                         Align(
                             alignment: Alignment.bottomRight,

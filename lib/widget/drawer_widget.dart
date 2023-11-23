@@ -12,7 +12,6 @@ class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-
       backgroundColor: AppColors.white,
       child: Column(children: [
         SizedBox(
@@ -48,6 +47,10 @@ class DrawerWidget extends StatelessWidget {
                   ],
                 )),
           ),
+        ),
+        ListTile(
+          title: Text("Admin"),
+          onTap: () {},
         )
       ]),
     );

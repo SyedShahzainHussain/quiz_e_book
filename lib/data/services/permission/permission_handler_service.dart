@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz_e_book/data/services/permission/permission_services.dart';
+
+// ! package
+import 'package:permission_handler/permission_handler.dart';
 
 class PermissionHandlerPermssionService extends PermissionServices {
   @override
@@ -44,7 +46,7 @@ class PermissionHandlerPermssionService extends PermissionServices {
                   FilledButton(
                       onPressed: () {
                         openAppSettings()
-                            .then((value) => Navigator.pop(context));
+                            .whenComplete(() => Navigator.pop(context));
                       },
                       child: const Text("Settings"))
                 ],

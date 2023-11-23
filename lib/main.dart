@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+// ! file
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/routes.dart';
-import 'package:quiz_e_book/view/login_screen/login_screen.dart';
+import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
+import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
+
+// ! package
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,23 +28,36 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bgColor),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.bgColor,
-          titleTextStyle: TextStyle(color: AppColors.white),
-          iconTheme: IconThemeData(color: AppColors.white),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => RegisteredViewModel(),
         ),
-        useMaterial3: true,
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme,
+        ChangeNotifierProvider(
+          create: (context) => LoginViewModel(),
         ),
+         ChangeNotifierProvider(
+          create: (context) => AuthViewModel(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bgColor),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: AppColors.bgColor,
+            titleTextStyle: TextStyle(color: AppColors.white),
+            iconTheme: IconThemeData(color: AppColors.white),
+          ),
+          useMaterial3: true,
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme,
+          ),
+        ),
+        onGenerateRoute: AppRoute.onGenerateRoute,
+        initialRoute: '/splash_screen',
       ),
-      onGenerateRoute: AppRoute.onGenerateRoute,
-      home: const LoginScreen(),
     );
   }
 }
