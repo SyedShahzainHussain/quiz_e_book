@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/extension/sizedbox_extension/sizedbox_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
-import 'package:quiz_e_book/viewModel/reset_view_model.dart/reset_view_model.dart';
+
+import 'package:quiz_e_book/viewModel/reset_view_model/reset_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 import 'package:quiz_e_book/widget/text_form_widget.dart';
 
@@ -21,7 +22,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final ValueNotifier<bool> obsecureText = ValueNotifier<bool>(true);
   final _form = GlobalKey<FormState>();
   String? passwordController;
-  void onSave() {
+  
+  void onSave()  {
     final validate = _form.currentState!.validate();
     if (validate) {
       _form.currentState!.save();
@@ -31,11 +33,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         "newPassword": passwordController
       };
       context.read<ResetViewModel>().resetOtp(body, context);
+      
     }
   }
 
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       appBar: AppBar(
         title: const Text("Back"),
@@ -124,9 +128,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   5.height,
                   Consumer<ResetViewModel>(
-                    builder: (context,value,_)=>
-                   Buttonwidget(
-                    isLoading: value.isLoading,
+                    builder: (context, value, _) => Buttonwidget(
+                      isLoading: value.isLoading,
                       text: "Send",
                       onTap: () {
                         onSave();

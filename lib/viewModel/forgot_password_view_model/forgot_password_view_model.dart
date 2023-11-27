@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/repositories/forgot_repo/forgot_password_repo.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/utils/utils.dart';
@@ -18,8 +18,10 @@ class ForgotPasswordViewModel with ChangeNotifier {
     setLoading(true);
     forgotPasswordRepo.forgotPassword(body).then((value) {
       setLoading(false);
-      Navigator.pushNamed(context, RouteName.otpScreen, arguments: email);
       Utils.flushBarErrorMessage("OTP has been send to your email", context);
+      Future.delayed(const Duration(seconds: 2), () {
+       GoRouter.of(context).push(RouteName.otpScreen, extra: email.toString());
+      });
     }).onError((error, stackTrace) {
       setLoading(false);
       if (kDebugMode) {

@@ -9,11 +9,11 @@ import 'package:quiz_e_book/data/network/base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
   @override
-  Future getGetApiResponse(String url) async {
+  Future getGetApiResponse(String url, {Map<String, String>? headers}) async {
     dynamic responseJson;
     try {
-      final response =
-          await get(Uri.parse(url)).timeout(const Duration(seconds: 20));
+      final response = await get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 20));
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException("No Internet Connection");

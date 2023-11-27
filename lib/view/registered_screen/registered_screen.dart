@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 // ! package
 import 'package:google_fonts/google_fonts.dart';
@@ -291,7 +292,6 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                             isLoading: value.isLoading,
                             text: "Register",
                             onTap: () {
-                              // Navigator.pushNamed(context, RouteName.otpScreen);
                               safe();
                             },
                           ),
@@ -306,8 +306,8 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                           TextSpan(
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, RouteName.loginScreen);
+                                  context.go(RouteName.loginScreen);
+                                  
                                 },
                               text: " Log In",
                               style: const TextStyle(

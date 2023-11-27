@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
@@ -31,10 +33,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           width: double.infinity,
           child: GestureDetector(
             onTap: () {
-              Navigator.pushNamed(
-                context,
-                RouteName.userProfileScreen,
-              );
+              GoRouter.of(context).push(RouteName.userProfileScreen);
             },
             child: Consumer<AuthViewModel>(
               builder: (context, value, child) => DrawerHeader(
@@ -76,6 +75,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   )),
             ),
           ),
+        ),
+        ListTile(
+          onTap: () {
+            GoRouter.of(context).push(RouteName.adminLoginScreen);
+          },
+          title: const Text("Admin"),
+          leading: const FaIcon(FontAwesomeIcons.userPlus),
         ),
       ]),
     );

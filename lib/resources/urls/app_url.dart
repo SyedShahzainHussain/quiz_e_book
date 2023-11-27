@@ -4,4 +4,5 @@ class AppUrl {
   static const login = '$baseUrl/login';
   static const forgotPassword = '$baseUrl/forgetpassword';
   static const resetPassword = '$baseUrl/resetpassword';
+  static const getAllUsers = '$baseUrl/allusers';
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "491247407527",
+    "project_id": "deeplinking-a1fb5",
+    "storage_bucket": "deeplinking-a1fb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491247407527:android:308a00e23ebe3d6d1aa682",
+        "android_client_info": {
+          "package_name": "com.zain.quiz_e_book"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1L6iMKae7sTp46dicATWsWRs_-cWuALs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
@@ -90,11 +91,10 @@ class OtpScreen extends StatelessWidget {
                   Buttonwidget(
                     text: "Send",
                     onTap: () {
-                      Navigator.pushNamed(context, RouteName.resetScreen,
-                          arguments: {
-                            "email": email,
-                            "otp": verificationCode,
-                          });
+                      GoRouter.of(context).push(RouteName.resetScreen, extra: {
+                        "email": email.toString(),
+                        "otp": verificationCode,
+                      });
                     },
                   ),
                 ],

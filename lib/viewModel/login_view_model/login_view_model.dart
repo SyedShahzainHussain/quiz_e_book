@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/data/network/base_api_services.dart';
 import 'package:quiz_e_book/data/network/network_api_services.dart';
 import 'package:quiz_e_book/model/login_model.dart';
@@ -42,8 +43,7 @@ class LoginViewModel with ChangeNotifier {
         username: username,
       );
       authViewModel.saveUser(loginData);
-      Navigator.pushNamedAndRemoveUntil(
-          context, RouteName.homeScreen, (route) => false);
+      GoRouter.of(context).go(RouteName.homeScreen);
       Utils.flushBarErrorMessage(
         "User Login",
         context,

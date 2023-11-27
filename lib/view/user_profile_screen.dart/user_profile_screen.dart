@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
@@ -146,8 +147,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       text: "Logout",
                       onTap: () {
                         data.remove().then((value2) {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, RouteName.loginScreen, (route) => false);
+                             return  GoRouter.of(context)
+                                      .go(RouteName.loginScreen);
+                        
                         });
                       }),
                 )

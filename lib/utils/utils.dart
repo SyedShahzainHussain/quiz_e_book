@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 // ! pacakge
 import 'package:another_flushbar/flushbar.dart';
@@ -8,7 +9,8 @@ import 'package:quiz_e_book/resources/color/app_color.dart';
 class Utils {
   static void flushBarErrorMessage(
     String message,
-    BuildContext context,) {
+    BuildContext context,
+  ) {
     showFlushbar(
       context: context,
       flushbar: Flushbar(
@@ -23,6 +25,8 @@ class Utils {
         ),
     );
   }
+
+  
 
   static showLoadingSpinner() {
     return SpinKitChasingDots(

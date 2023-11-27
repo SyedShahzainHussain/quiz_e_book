@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 // ! package
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,7 +32,7 @@ class LoginScreen extends StatelessWidget {
 
       if (validate) {
         form.currentState!.save();
-        
+
         final body = {
           "email": emailController,
           "password": passwordController,
@@ -157,7 +158,6 @@ class LoginScreen extends StatelessWidget {
                             text: "Login",
                             onTap: () {
                               safe();
-                              // Navigator.pushNamed(context, RouteName.homeScreen);
                             },
                           ),
                         ),
@@ -165,8 +165,7 @@ class LoginScreen extends StatelessWidget {
                             alignment: Alignment.bottomRight,
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, RouteName.forgotPasswordScreen);
+                                context.push(RouteName.forgotPasswordScreen);
                               },
                               child: const Text(
                                 "Forgot Password?",
@@ -185,8 +184,9 @@ class LoginScreen extends StatelessWidget {
                           TextSpan(
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, RouteName.registeredScreen);
+                                  context.go(
+                                    RouteName.registeredScreen,
+                                  );
                                 },
                               text: " Sign Up",
                               style: const TextStyle(

@@ -3,9 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/repositories/registered_repo/registered_repo.dart';
-import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/resources/urls/app_url.dart';
 // ignore: depend_on_referenced_packages, implementation_imports
@@ -52,11 +51,7 @@ class RegisteredViewModel with ChangeNotifier {
         password = '';
         dateofbirth = '';
         image = null;
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          RouteName.loginScreen,
-          (route) => false,
-        );
+        GoRouter.of(context).go(RouteName.loginScreen);
         Utils.flushBarErrorMessage(
           "Registerd SuccessFully",
           context,

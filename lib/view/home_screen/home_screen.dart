@@ -1,15 +1,37 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
+import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+import 'package:quiz_e_book/utils/utils.dart';
+import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/widget/Score_widget.dart';
 
 import 'package:quiz_e_book/widget/drawer_widget.dart';
 import 'package:quiz_e_book/widget/positioned_widget.dart';
 import 'package:quiz_e_book/widget/quiz_ebook_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  GetAllUsers getAllUsers = GetAllUsers();
+  Future<LoginData> getUserData() => AuthViewModel().getUser();
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData()
+        .then((value) => {getAllUsers.getUserData(value.token.toString())});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,76 +72,79 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         drawer: const DrawerWidget(),
-        body: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  QuizAndEbookWidget(
-                      image: "assets/images/quiz.jpg",
-                      title: "Quiz",
-                      onTap: () {}),
-                  QuizAndEbookWidget(
-                      image: "assets/images/e-book.jpg",
-                      title: "E-Book",
-                      onTap: () {
-                        Navigator.pushNamed(context, RouteName.ebookScreen);
-                      }),
-                ],
-              ),
-              SizedBox(
-                height: context.screenheight * .05,
-              ),
-              Column(
+        body: ChangeNotifierProvider<GetAllUsers>(
+            create: (BuildContext context) => getAllUsers,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      PositionHolderWidget(
-                        height: context.screenheight * .15,
-                        width: context.screenwidth * .3,
-                        position: '2',
-                        winnername: "Alishba",
-                        totalScore: "800",
-                        positionColor: AppColors.secondpositioned,
-                        winnerprofile:
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9j-T0S_IkBKoSDse9xf_4PmgvPjtrN6zwLg&usqp=CAU',
-                      ),
-                      PositionHolderWidget(
-                        height: context.screenheight * .2,
-                        width: context.screenwidth * .3,
-                        position: '1',
-                        winnername: "Sadia",
-                        totalScore: "1000",
-                        positionColor: AppColors.firstpositioned,
-                        winnerprofile:
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQAnbGam3LTcANNzA138-7xvcuzrTO5eqlnw&usqp=CAU',
-                      ),
-                      PositionHolderWidget(
-                        height: context.screenheight * .15,
-                        width: context.screenwidth * .3,
-                        position: '3',
-                        winnername: "Shariq",
-                        totalScore: "900",
-                        positionColor: AppColors.bgColor,
-                        winnerprofile:
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcNPOPDCWiEvN0x11fc_02MzdhtzcLOwg-qg&usqp=CAU',
+                      QuizAndEbookWidget(
+                          image: "assets/images/quiz.jpg",
+                          title: "Quiz",
+                          onTap: () {}),
+                      QuizAndEbookWidget(
+                          image: "assets/images/e-book.jpg",
+                          title: "E-Book",
+                          onTap: () {
+                            GoRouter.of(context).push(RouteName.ebookScreen);
+                          }),
+                    ],
+                  ),
+                  SizedBox(
+                    height: context.screenheight * .05,
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          PositionHolderWidget(
+                            height: context.screenheight * .15,
+                            width: context.screenwidth * .3,
+                            position: '2',
+                            winnername: "Alishba",
+                            totalScore: "800",
+                            positionColor: AppColors.secondpositioned,
+                            winnerprofile:
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9j-T0S_IkBKoSDse9xf_4PmgvPjtrN6zwLg&usqp=CAU',
+                          ),
+                          PositionHolderWidget(
+                            height: context.screenheight * .2,
+                            width: context.screenwidth * .3,
+                            position: '1',
+                            winnername: "Sadia",
+                            totalScore: "1000",
+                            positionColor: AppColors.firstpositioned,
+                            winnerprofile:
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQAnbGam3LTcANNzA138-7xvcuzrTO5eqlnw&usqp=CAU',
+                          ),
+                          PositionHolderWidget(
+                            height: context.screenheight * .15,
+                            width: context.screenwidth * .3,
+                            position: '3',
+                            winnername: "Shariq",
+                            totalScore: "900",
+                            positionColor: AppColors.bgColor,
+                            winnerprofile:
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcNPOPDCWiEvN0x11fc_02MzdhtzcLOwg-qg&usqp=CAU',
+                          ),
+                        ],
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: context.screenheight * .02,
+                  ),
+              const ScoreWidget()
                 ],
               ),
-              SizedBox(
-                height: context.screenheight * .02,
-              ),
-              const ScoreWidget()
-            ],
-          ),
-        ));
+            )));
   }
 }
+
 
 
 // SizedBox(

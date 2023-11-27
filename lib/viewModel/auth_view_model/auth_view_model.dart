@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthViewModel with ChangeNotifier {
 
 
-  LoginData? _loginData;
+LoginData? _loginData;
 
   LoginData? get loginData => _loginData;
 

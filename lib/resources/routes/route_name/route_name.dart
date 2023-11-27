@@ -1,10 +1,10 @@
 class RouteName {
   // * splash screen
-  static const splashScreen = '/splash_screen';
+  static const splashScreen = '/';
   // * login screen
   static const loginScreen = '/login_screen';
   // * register screen
-  static const registeredScreen = '/registered_screen';
+  static const registeredScreen = '/register_screen';
   // * forgot password screen
   static const forgotPasswordScreen = '/forgot_password_screen';
   // * otp screen
@@ -19,4 +19,12 @@ class RouteName {
   static const pdfviewScreen = '/pdf_view_screen';
   // * reset_view_screen
   static const resetScreen = '/reset_view_screen';
+  // * save_pdf_screen
+  static const savePdfScreen = '/safe_pdf_screen';
+
+  // ! admin screen
+  static const adminLoginScreen = '/admin_login_screen';
+  static const adminScreen = '/admin_screen';
+  static const uploadPdfScreen = '/upload_pdf_screen';
+  
 }

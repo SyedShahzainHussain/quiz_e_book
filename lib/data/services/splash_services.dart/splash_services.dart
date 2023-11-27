@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
@@ -12,18 +13,17 @@ class SplashService {
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
       if (value.token == null || value.token == "") {
-        Navigator.pushNamedAndRemoveUntil(
-            context, RouteName.loginScreen, (route) => false);
+        GoRouter.of(context).go(RouteName.loginScreen);
       } else {
         bool isTokenExpired = JwtDecoder.isExpired(value.token.toString());
-        print(isTokenExpired);
         if (isTokenExpired) {
           SharedPreferences sp = await SharedPreferences.getInstance();
           sp.remove("token");
+            GoRouter.of(context).go(RouteName.loginScreen);
         }
 
-        Navigator.pushNamedAndRemoveUntil(
-            context, RouteName.homeScreen, (route) => false);
+        // ignore: use_build_context_synchronously
+        GoRouter.of(context).go(RouteName.homeScreen);
       }
     }).onError((error, stackTrace) {
       if (kDebugMode) {
