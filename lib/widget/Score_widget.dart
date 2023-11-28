@@ -118,7 +118,8 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text("0",
+                                        Text(   value
+                                            .apiresponse.data![index].scorrer!,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall!

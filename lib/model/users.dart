@@ -9,18 +9,21 @@ class Users {
   int? iV;
   String? role;
   String? id;
+  String? scorrer;
 
-  Users(
-      {this.sId,
-      this.username,
-      this.email,
-      this.dob,
-      this.profilePhoto,
-      this.createdAt,
-      this.updatedAt,
-      this.iV,
-      this.role,
-      this.id});
+  Users({
+    this.sId,
+    this.username,
+    this.email,
+    this.dob,
+    this.profilePhoto,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
+    this.role,
+    this.id,
+    this.scorrer,
+  });
 
   Users.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -33,7 +36,6 @@ class Users {
     iV = json['__v'];
     role = json['role'];
     id = json['id'];
+    scorrer = json['scorrer'];
   }
-
-
 }

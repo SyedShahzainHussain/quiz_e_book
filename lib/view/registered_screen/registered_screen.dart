@@ -64,7 +64,7 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
   }
 
   Future<File?> showImage(ImageSource imageSource) async {
-    var file = await MediaService.uploadImage(context, imageSource);
+    var file = await MediaService.uploadImage2(context, imageSource);
     setState(() {
       image = file;
     });
@@ -226,6 +226,7 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                           builder: (context, value, _) => TextFormField(
                             focusNode: passwordnode,
                             textInputAction: TextInputAction.next,
+                            obscuringCharacter: "*",
                             onFieldSubmitted: (_) =>
                                 FocusScope.of(context).nextFocus(),
                             onSaved: (value) {
@@ -307,7 +308,6 @@ class _RegisteredScreenState extends State<RegisteredScreen> {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   context.go(RouteName.loginScreen);
-                                  
                                 },
                               text: " Log In",
                               style: const TextStyle(

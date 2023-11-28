@@ -70,9 +70,9 @@ class AppRoute {
     GoRoute(
       path: RouteName.pdfviewScreen,
       builder: (BuildContext context, GoRouterState state) {
-        final String id = state.extra.toString();
+        final data = state.extra as  Map<String,dynamic> ;
         return PdfViewScreen(
-          id: id,
+          data: data,
         );
       },
     ),

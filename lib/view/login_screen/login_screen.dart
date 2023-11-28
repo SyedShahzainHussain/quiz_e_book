@@ -124,6 +124,7 @@ class LoginScreen extends StatelessWidget {
                               }
                               return null;
                             },
+                            obscuringCharacter: "*",
                             decoration: InputDecoration(
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.all(12.0),

@@ -13,8 +13,8 @@ class LoginData {
     this.dob,
     this.profilePhoto,
     this.token,
-  });
-
+  }); 
+  
   LoginData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     username = json['username'];

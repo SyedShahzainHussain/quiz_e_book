@@ -51,6 +51,14 @@ class AdminDrawerWidget extends StatelessWidget {
         ),
         ListTile(
           onTap: () async {
+            
+            GoRouter.of(context).go(RouteName.homeScreen);
+          },
+          title: const Text("Back To Home"),
+          leading: const Icon(Icons.backspace),
+        ),
+        ListTile(
+          onTap: () async {
             SharedPreferences sharedPreferences =
                 await SharedPreferences.getInstance();
             sharedPreferences.remove("isLogin");
@@ -59,6 +67,7 @@ class AdminDrawerWidget extends StatelessWidget {
           title: const Text("Logout"),
           leading: const Icon(Icons.logout),
         ),
+        
       ]),
     );
   }

@@ -11,6 +11,7 @@ class Textformwidget extends StatelessWidget {
   final TextInputType? keyboardType;
   final Widget? sufficIcon;
   final bool obsecure;
+  final TextEditingController? controller;
   const Textformwidget({
     super.key,
     required this.onSave,
@@ -22,15 +23,18 @@ class Textformwidget extends StatelessWidget {
     this.textInputAction,
     this.keyboardType,
     this.sufficIcon,
-    this.obsecure =false,
+    this.obsecure = false,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       obscureText: obsecure,
       keyboardType: keyboardType,
       focusNode: focusNode,
+      obscuringCharacter: "*",
       onFieldSubmitted: (_) =>
           FocusScope.of(context).requestFocus(nextFocusNode),
       validator: validator,

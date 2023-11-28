@@ -104,14 +104,10 @@ class _LoginScreenAdminState extends State<LoginScreenAdmin> {
             },
             icon: const Icon(Icons.arrow_back)),
       ),
-      body:  WillPopScope(
-      onWillPop: ()  async {
-
-
-        context.go(RouteName.homeScreen);
-        return false;
-        
-        
+      body: WillPopScope(
+        onWillPop: () async {
+          context.go(RouteName.homeScreen);
+          return false;
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -139,6 +135,7 @@ class _LoginScreenAdminState extends State<LoginScreenAdmin> {
                       focusNode: _loginMode,
                       textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.admin_panel_settings),
                         labelText: "Email",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(
@@ -164,6 +161,7 @@ class _LoginScreenAdminState extends State<LoginScreenAdmin> {
                           obscureText: isObsecure.value,
                           textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.security),
                             suffixIcon: IconButton(
                                 onPressed: () {
                                   isObsecure.value = !isObsecure.value;

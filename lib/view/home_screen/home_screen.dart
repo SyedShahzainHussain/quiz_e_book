@@ -43,33 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
             "Home",
             style: TextStyle(color: AppColors.white),
           ),
-          actions: [
-            Container(
-              margin: const EdgeInsets.only(
-                left: 5,
-                right: 15,
-              ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  color: AppColors.bgColor3),
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                children: [
-                  Text(
-                    '100',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  Image.asset(
-                    "assets/images/coin.gif",
-                    width: 20,
-                  ),
-                ],
-              ),
-            )
-          ],
         ),
         drawer: const DrawerWidget(),
         body: ChangeNotifierProvider<GetAllUsers>(
@@ -138,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: context.screenheight * .02,
                   ),
-              const ScoreWidget()
+                  const ScoreWidget()
                 ],
               ),
             )));

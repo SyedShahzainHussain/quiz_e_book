@@ -4,11 +4,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_e_book/data/services/permission/media_services.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/utils/utils.dart';
-import 'package:quiz_e_book/view/e_book/e_book.dart';
+import 'package:quiz_e_book/viewModel/uploadfle_view_model/upload_file_viewModel.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 import 'package:quiz_e_book/widget/text_form_widget.dart';
 import 'package:gap/gap.dart';
@@ -22,13 +23,19 @@ class UploadPdfWidget extends StatefulWidget {
 
 class _UploadPdfWidgetState extends State<UploadPdfWidget> {
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  TextEditingController titileContrpller = TextEditingController();
 
   String? title;
-  String? pdffile;
+  File? pdffile;
   File? image;
+  @override
+  dispose() {
+    super.dispose();
+    titileContrpller.dispose();
+  }
 
-  Future<File?> showImage(ImageSource imageSource) async {
-    var file = await MediaService.uploadImage(context, imageSource);
+  Future<Uint8List?> showImage(ImageSource imageSource) async {
+    var file = await MediaService.uploadImage2(context, imageSource);
     setState(() {
       image = file;
     });
@@ -73,29 +80,48 @@ class _UploadPdfWidgetState extends State<UploadPdfWidget> {
     );
   }
 
-  Future<String?> pickFIle() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
-    if (result == null) {
-      return null;
-    } else {
-      String file = result.files.first.path.toString();
+  Future<File?> pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result == null) {
+        return null;
+      }
+
+      List<File> files = result.files.map((file) => File(file.path!)).toList();
+
+      if (files.isEmpty) {
+        return null;
+      }
+
+      File? fileBytes = files.first.absolute;
       Utils.flushBarErrorMessage("Pdf Selected", context);
-      return file;
+      return fileBytes;
+    } catch (e) {
+      Utils.flushBarErrorMessage("Error picking file: $e", context);
+      return null;
     }
   }
 
   void onSave() async {
     final validate = _form.currentState!.validate();
-    if (validate && image != null && pdffile != null) {
+    if (!validate && image == null && pdffile == null) {
+      return;
+    }
+    if (validate && pdffile != null && image != null) {
       _form.currentState!.save();
-      if (kDebugMode) {
-        print(title);
-        print(pdffile);
-        print(image!.path);
-      }
+
+      context
+          .read<UploadFileViewModel>()
+          .uploadFiletoFirestore(pdffile, image, context, title!)
+          .then((value) {
+      
+      });
+    } else {
+      Utils.flushBarErrorMessage("Add All Fields", context);
     }
   }
 
@@ -111,6 +137,7 @@ class _UploadPdfWidgetState extends State<UploadPdfWidget> {
             child: Column(
               children: [
                 Textformwidget(
+                  controller: titileContrpller,
                   onSave: (value) {
                     title = value;
                   },
@@ -163,7 +190,8 @@ class _UploadPdfWidgetState extends State<UploadPdfWidget> {
                           Buttonwidget(
                             text: "Upload PDF",
                             onTap: () async {
-                              pdffile = await pickFIle();
+                              pdffile = await pickFile();
+                              setState(() {});
                             },
                           ),
                         ],
@@ -172,11 +200,16 @@ class _UploadPdfWidgetState extends State<UploadPdfWidget> {
                   ],
                 ),
                 const Gap(20),
-                Buttonwidget(
-                    text: "Submit",
-                    onTap: () {
-                      onSave();
-                    })
+                Consumer<UploadFileViewModel>(
+                  builder: (context, value, child) {
+                    return Buttonwidget(
+                        isLoading: value.isLoading,
+                        text: "Submit",
+                        onTap: () {
+                          onSave();
+                        });
+                  },
+                )
               ],
             ),
           ),

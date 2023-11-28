@@ -92,23 +92,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                         .apiresponse
                                         .data![index]
                                         .profilePhoto!)),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("0",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall!
-                                            .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.white,
-                                            )),
-                                    Image.asset(
-                                      "assets/images/coin.gif",
-                                      width: context.screenwidth * .05,
-                                    )
-                                  ],
-                                ),
+                                
                                 title: Text(
                                     value.apiresponse.data![index].username!,
                                     style: Theme.of(context)

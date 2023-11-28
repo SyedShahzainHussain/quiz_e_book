@@ -22,6 +22,7 @@ import 'package:provider/provider.dart';
 import 'package:quiz_e_book/viewModel/reset_view_model/reset_view_model.dart';
 import 'package:quiz_e_book/viewModel/save_pdf_view_model/save_pdf_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:quiz_e_book/viewModel/uploadfle_view_model/upload_file_viewModel.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
@@ -53,15 +54,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // firebaseDynamicLink.initDynamicLinks((openLink) {
-    //   // final pathSegment = openLink.link.queryParameters;
-    //   if (openLink.link.path == "/pdf_view_screen") {
-    //     String customParamValue = openLink.link.queryParameters['id'] as String;
-    //     print("Custom Parameter Value: $customParamValue");
-    //     return GoRouter.of(context)
-    //         .go(RouteName.pdfviewScreen, extra: "1");
-    //   }
-    // });
+    
   }
 
   // This widget is the root of your application.
@@ -89,6 +82,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => GetAllUsers(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UploadFileViewModel(),
         ),
       ],
       child: MaterialApp.router(
