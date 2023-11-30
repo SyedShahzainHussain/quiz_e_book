@@ -17,7 +17,6 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Quiz"),
-        
       ),
       body: Consumer<QuizViewModel>(
         builder: (context, value, child) {
@@ -42,10 +41,31 @@ class _QuizScreenState extends State<QuizScreen> {
                     onTap: value.getQuiz[index].isLoacked
                         ? null
                         : () {
-                            context.push(
-                              RouteName.quizAnswerScreen,
-                              extra: value.getQuiz[index].level,
-                            );
+                            String selectedLevel = value.getQuiz[index].level;
+                            if (value
+                                .areQuestionsAvailableForLevel(selectedLevel)) {
+                              context.push(
+                                RouteName.quizAnswerScreen,
+                                extra: selectedLevel,
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('No Questions Available'),
+                                  content: const Text(
+                                      'There are no questions available for this level.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
                           },
                     child: GridTile(
                       footer: GridTileBar(

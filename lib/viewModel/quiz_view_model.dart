@@ -32,13 +32,32 @@ class QuizViewModel with ChangeNotifier {
       answer: 3,
     ),
     Question(
-      level: "1",
+      level: "2",
       id: 4,
       question: "What command do you use to output data to the screen?",
       options: ['Cin', 'Count>>', 'Cout', 'Output>>'],
       answer: 2,
     ),
   ];
+
+  List<int> _unlockedLevels = [1]; // List to track unlocked levels
+
+  List<int> get unlockedLevels => _unlockedLevels;
+
+  void unlockNextLevel() {
+    int nextLevel = _unlockedLevels.isNotEmpty
+        ? _unlockedLevels.last + 1
+        : 1; // Unlock the next level
+    if (nextLevel <= _quiz.length) {
+      // Update the isLoacked status for the unlocked level
+      _quiz[nextLevel - 1].isLoacked = false;
+
+      // Add the unlocked level to the list
+      _unlockedLevels.add(nextLevel);
+
+      notifyListeners();
+    }
+  }
 
   List<Quiz> get getQuiz => [..._quiz];
   final List<Quiz> _quiz = [
@@ -54,6 +73,12 @@ class QuizViewModel with ChangeNotifier {
       level: "2",
       isLoacked: true,
     ),
+    Quiz(
+      id: DateTime.now().toIso8601String(),
+      image: "assets/images/quiz.jpg",
+      level: "3",
+      isLoacked: true,
+    ),
   ];
 
   void updateQuizLocked(String quizId, int length) {
@@ -63,6 +88,10 @@ class QuizViewModel with ChangeNotifier {
     } else {
       return;
     }
+  }
+
+  bool areQuestionsAvailableForLevel(String level) {
+    return getQuestion.any((question) => question.level == level);
   }
 
   bool _isAnswered = false;
@@ -87,6 +116,11 @@ class QuizViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void resetcorrectAns() {
+    _numOfCorrectAns = 0;
+    notifyListeners();
+  }
+
   void checkAns(
     Question question,
     int selectedIndex,
@@ -106,7 +140,7 @@ class QuizViewModel with ChangeNotifier {
     notifyListeners();
 
     // Once user select an ans after 3s it will go to the next qn
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       nextQuestion(pageController, animationController, context, ques);
     });
   }
@@ -120,7 +154,7 @@ class QuizViewModel with ChangeNotifier {
       _questiionLength = ques.length;
       _isAnswered = false;
       pageController.nextPage(
-          duration: const Duration(milliseconds: 250), curve: Curves.ease);
+          duration: const Duration(milliseconds: 150), curve: Curves.ease);
 
       animationController.reset();
       animationController.forward().whenComplete(() =>
@@ -130,6 +164,7 @@ class QuizViewModel with ChangeNotifier {
       _questionNumber = 1;
       _isAnswered = false;
     }
+    notifyListeners();
   }
 
   void updateTheQnNum(int index) {

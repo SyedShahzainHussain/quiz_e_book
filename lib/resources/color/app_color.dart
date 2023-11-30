@@ -14,6 +14,8 @@ class AppColors {
   static const darkorane = Color(0xffdd584e);
   static const darkbrown = Color(0xffa6752c);
   static const darkyellow = Color(0xffe1b438);
+  static const green = Colors.green;
+  static const red = Colors.red;
 
   // ! gradient colors
   static const deeporange = Color(0xffd35320);

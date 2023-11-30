@@ -41,6 +41,11 @@ void main() async {
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: AppColors.white));
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(const MyApp());
 }
 
@@ -56,7 +61,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   // This widget is the root of your application.
