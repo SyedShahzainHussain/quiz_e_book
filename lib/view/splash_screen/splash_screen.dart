@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
+import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,6 +17,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    splashService.onTokenExpired.listen((event) {
+      Utils.flushBarErrorMessage("Token Expire", context);
+      context.go(RouteName.loginScreen);
+    });
     splashService.checkAuthentication(context);
   }
 

@@ -9,9 +9,12 @@ import 'package:quiz_e_book/view/forgot_password/forgot_password_screen.dart';
 import 'package:quiz_e_book/view/home_screen/home_screen.dart';
 import 'package:quiz_e_book/view/login_screen/login_screen.dart';
 import 'package:quiz_e_book/view/otp_screen.dart/otp_screen.dart';
+import 'package:quiz_e_book/view/quiz_answer/quiz_answer.dart';
+import 'package:quiz_e_book/view/quiz_screen/quiz_screen.dart';
 import 'package:quiz_e_book/view/registered_screen/registered_screen.dart';
 import 'package:quiz_e_book/view/reset_password_screen/reset_password_screen.dart';
 import 'package:quiz_e_book/view/safe_pdf_screen/save_pdf_screen.dart';
+import 'package:quiz_e_book/view/scorescreen/score_screen.dart';
 import 'package:quiz_e_book/view/splash_screen/splash_screen.dart';
 import 'package:quiz_e_book/view/user_profile_screen.dart/user_profile_screen.dart';
 
@@ -70,7 +73,7 @@ class AppRoute {
     GoRoute(
       path: RouteName.pdfviewScreen,
       builder: (BuildContext context, GoRouterState state) {
-        final data = state.extra as  Map<String,dynamic> ;
+        final data = state.extra as Map<String, dynamic>;
         return PdfViewScreen(
           data: data,
         );
@@ -86,6 +89,27 @@ class AppRoute {
       path: RouteName.savePdfScreen,
       builder: (BuildContext context, GoRouterState state) {
         return const SafePdfScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.quizScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const QuizScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.quizAnswerScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        final String quizid = state.extra as String;
+        return QuizAnswer(
+          id: quizid,
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteName.scoreScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return  const ScoreScreen();
       },
     ),
 
@@ -107,8 +131,6 @@ class AppRoute {
       builder: (BuildContext context, GoRouterState state) {
         return const UploadPdfWidget();
       },
-    )
-    ,
-
+    ),
   ]);
 }

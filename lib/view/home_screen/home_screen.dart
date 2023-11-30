@@ -1,12 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
-import 'package:quiz_e_book/utils/utils.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/widget/Score_widget.dart';
@@ -25,10 +24,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   GetAllUsers getAllUsers = GetAllUsers();
   Future<LoginData> getUserData() => AuthViewModel().getUser();
-
+  SplashService splashService = SplashService();
   @override
   void initState() {
     super.initState();
+
     getUserData()
         .then((value) => {getAllUsers.getUserData(value.token.toString())});
   }
@@ -56,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       QuizAndEbookWidget(
                           image: "assets/images/quiz.jpg",
                           title: "Quiz",
-                          onTap: () {}),
+                          onTap: () {
+                            GoRouter.of(context).push(RouteName.quizScreen);
+                          }),
                       QuizAndEbookWidget(
                           image: "assets/images/e-book.jpg",
                           title: "E-Book",

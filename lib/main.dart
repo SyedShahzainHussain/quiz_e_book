@@ -4,6 +4,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
 
 // ! file
 import 'package:quiz_e_book/resources/color/app_color.dart';
@@ -14,6 +15,7 @@ import 'package:quiz_e_book/viewModel/dynamic_link_view_model/dynamic_link_view_
 import 'package:quiz_e_book/viewModel/forgot_password_view_model/forgot_password_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
+import 'package:quiz_e_book/viewModel/quiz_view_model.dart';
 import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
 
 // ! package
@@ -85,6 +87,12 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => UploadFileViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SplashService(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => QuizViewModel(),
         ),
       ],
       child: MaterialApp.router(

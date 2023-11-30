@@ -21,6 +21,12 @@ class RouteName {
   static const resetScreen = '/reset_view_screen';
   // * save_pdf_screen
   static const savePdfScreen = '/safe_pdf_screen';
+  // * quiz_screen
+  static const quizScreen = '/quiz_screen';
+  // * quiz_answer_screen
+  static const quizAnswerScreen = '/quiz_answer_screen';
+  // * score_screen
+  static const scoreScreen = '/score_screen';
 
   // ! admin screen
   static const adminLoginScreen = '/admin_login_screen';

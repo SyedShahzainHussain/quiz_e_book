@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
@@ -7,8 +9,10 @@ import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SplashService {
+class SplashService with ChangeNotifier {
   Future<LoginData> getUserData() => AuthViewModel().getUser();
+  final __tokenExpiredController = StreamController<bool>();
+  Stream<bool> get onTokenExpired => __tokenExpiredController.stream;
 
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
@@ -19,7 +23,8 @@ class SplashService {
         if (isTokenExpired) {
           SharedPreferences sp = await SharedPreferences.getInstance();
           sp.remove("token");
-            GoRouter.of(context).go(RouteName.loginScreen);
+          __tokenExpiredController.add(true);
+          GoRouter.of(context).go(RouteName.loginScreen);
         }
 
         // ignore: use_build_context_synchronously

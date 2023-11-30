@@ -23,4 +23,10 @@ class AppColors {
   static const firstpositioned = Color(0xfffa9604);
   static const secondpositioned = Color(0xff49b151);
   static const thirdpositioned = Color(0xff2195f1);
+  // linear gradient
+  static const kPrimaryGradient = LinearGradient(
+  colors: [Color(0xFF46A0AE), Color(0xFF00FFCB)],
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+);
 }

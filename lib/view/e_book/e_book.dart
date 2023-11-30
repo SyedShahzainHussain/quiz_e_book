@@ -1,7 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 import 'package:share_plus/share_plus.dart';
@@ -11,10 +17,16 @@ import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 
-class Ebook extends StatelessWidget {
+class Ebook extends StatefulWidget {
   const Ebook({super.key});
 
+  @override
+  State<Ebook> createState() => _EbookState();
+}
+
+class _EbookState extends State<Ebook> {
   @override
   Widget build(BuildContext context) {
     // var inputFormat = DateFormat('dd/MM/yyyy');
@@ -46,25 +58,53 @@ class Ebook extends StatelessWidget {
               (index) => Flexible(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: context.screenheight * .2,
-                    width: context.screenwidth * .35,
-                    margin: const EdgeInsets.only(
-                        left: 5, right: 5), // Adjust the height as needed
-                    child: Column(
-                      children: [
-                        Container(
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: Image.network(
-                                data[index]['imagefile'],
-                                width: double.infinity,
-                                height: context.screenheight * .15,
-                              )),
-                        ),
-                        Text(data[index]['title'])
-                      ],
-                    ), // Replace with your widget
+                  child: GestureDetector(
+                    onTap: () {
+                     
+
+                      GoRouter.of(context).push(
+                        RouteName.pdfviewScreen,
+                        extra: {
+                          "title": data[index].data()['title'],
+                          "pdf": data[index].data()['pdffile']
+                        },
+                      );
+                    },
+                    child: Container(
+                      height: context.screenheight * .30,
+                      width: context.screenwidth * .45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(22.0),
+                      ),
+                      margin: const EdgeInsets.only(
+                          left: 5, right: 5), // Adjust the height as needed
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(22.0),
+                                child: Image.network(
+                                  data[index]['imagefile'],
+                                  width: double.infinity,
+                                  height: context.screenheight * .2,
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
+                          const Gap(10),
+                          Text(
+                            data[index]['title'],
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ), // Replace with your widget
+                    ),
                   ),
                 ),
               ),
@@ -95,11 +135,13 @@ class Ebook extends StatelessWidget {
                             children: [
                               ListTile(
                                 onTap: () {
-                                  GoRouter.of(context)
-                                      .push(RouteName.pdfviewScreen, extra: {
-                                    "title": data[index].data()['title'],
-                                    "pdf": data[index].data()['pdffile']
-                                  });
+                                  GoRouter.of(context).push(
+                                    RouteName.pdfviewScreen,
+                                    extra: {
+                                      "title": data[index].data()['title'],
+                                      "pdf": data[index].data()['pdffile']
+                                    },
+                                  );
                                 },
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
@@ -168,12 +210,14 @@ class _PdfViewScreenState extends State<PdfViewScreen> {
     super.initState();
   }
 
+  double? _progress;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.data['title'].toString()),
           actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.download)),
             IconButton(
                 onPressed: () {
                   _pdfViewerState.currentState!.openBookmarkView();
@@ -191,10 +235,12 @@ class _PdfViewScreenState extends State<PdfViewScreen> {
                 icon: const Icon(Icons.zoom_out)),
           ],
         ),
-        body: SfPdfViewer.network(
-          widget.data['pdf'],
-          controller: _pdfViewerController,
-          key: _pdfViewerState,
-        ));
+        body: _progress != null
+            ? Utils.showLoadingSpinner()
+            : SfPdfViewer.network(
+                widget.data['pdf'],
+                controller: _pdfViewerController,
+                key: _pdfViewerState,
+              ));
   }
 }
