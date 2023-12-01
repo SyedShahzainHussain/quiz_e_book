@@ -1,13 +1,10 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,7 +14,6 @@ import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 
 class Ebook extends StatefulWidget {
   const Ebook({super.key});

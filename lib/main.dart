@@ -3,19 +3,17 @@ import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
 
 // ! file
 import 'package:quiz_e_book/resources/color/app_color.dart';
-import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/resources/routes/routes.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/dynamic_link_view_model/dynamic_link_view_model.dart';
 import 'package:quiz_e_book/viewModel/forgot_password_view_model/forgot_password_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
-import 'package:quiz_e_book/viewModel/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
 
 // ! package
@@ -25,10 +23,12 @@ import 'package:quiz_e_book/viewModel/reset_view_model/reset_view_model.dart';
 import 'package:quiz_e_book/viewModel/save_pdf_view_model/save_pdf_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:quiz_e_book/viewModel/uploadfle_view_model/upload_file_viewModel.dart';
-// import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   await Firebase.initializeApp();
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {

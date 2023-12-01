@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quiz_e_book/admin/add_question/add_questions.dart';
 import 'package:quiz_e_book/admin/admin_screen/admin_screen.dart';
 import 'package:quiz_e_book/admin/login_screen/login_screen.dart';
 import 'package:quiz_e_book/admin/upload_pdf_widget/upload_pdf_widget.dart';
+import 'package:quiz_e_book/admin/upload_quiz/upload_quiz.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/view/e_book/e_book.dart';
 import 'package:quiz_e_book/view/forgot_password/forgot_password_screen.dart';
@@ -102,14 +104,26 @@ class AppRoute {
       builder: (BuildContext context, GoRouterState state) {
         final String quizid = state.extra as String;
         return QuizAnswer(
-          id: quizid,
+          level: quizid,
         );
       },
     ),
     GoRoute(
       path: RouteName.scoreScreen,
       builder: (BuildContext context, GoRouterState state) {
-        return  const ScoreScreen();
+        return const ScoreScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.uploadQuizScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const UploadQuiz();
+      },
+    ),
+    GoRoute(
+      path: RouteName.uploadQuestionScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddQuestionForm();
       },
     ),
 

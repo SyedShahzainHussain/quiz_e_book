@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
-import 'package:quiz_e_book/viewModel/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -13,6 +13,13 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   @override
+  void initState() {
+    super.initState();
+    context.read<QuizViewModel>().getProducts();
+    context.read<QuizViewModel>().getQuestions();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -20,6 +27,11 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
       body: Consumer<QuizViewModel>(
         builder: (context, value, child) {
+          if (value.getQuiz.isEmpty) {
+            return const Center(
+              child: Text("No Quiz!"),
+            );
+          }
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -30,7 +42,7 @@ class _QuizScreenState extends State<QuizScreen> {
             itemBuilder: (context, index) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (index == 0) {
-                  value.updateQuizLocked(value.getQuiz[0].id, 0);
+                  value.updateQuizLocked(value.getQuiz[0].id!, 0);
                 }
               });
               return Padding(
@@ -41,7 +53,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     onTap: value.getQuiz[index].isLoacked
                         ? null
                         : () {
-                            String selectedLevel = value.getQuiz[index].level;
+                            String selectedLevel = value.getQuiz[index].level!;
                             if (value
                                 .areQuestionsAvailableForLevel(selectedLevel)) {
                               context.push(
@@ -53,8 +65,8 @@ class _QuizScreenState extends State<QuizScreen> {
                                 context: context,
                                 builder: (context) => AlertDialog(
                                   title: const Text('No Questions Available'),
-                                  content: const Text(
-                                      'There are no questions available for this level.'),
+                                  content: Text(
+                                      'There are no questions available for this level ${value.getQuiz[index].level}.'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
@@ -79,7 +91,10 @@ class _QuizScreenState extends State<QuizScreen> {
                               Icons.lock,
                               size: 50,
                             )
-                          : Image.asset(value.getQuiz[index].image),
+                          : Image.network(
+                              value.getQuiz[index].image!,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                 ),

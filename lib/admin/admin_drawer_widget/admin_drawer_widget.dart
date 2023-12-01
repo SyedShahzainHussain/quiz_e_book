@@ -41,17 +41,29 @@ class AdminDrawerWidget extends StatelessWidget {
                 ],
               )),
         ),
-       ListTile(
+        ListTile(
           onTap: () async {
-           
             GoRouter.of(context).push(RouteName.uploadPdfScreen);
           },
-          title: const Text("Add Pdf"),
+          title: const Text("Upload Pdf"),
           leading: const Icon(Icons.picture_as_pdf),
         ),
         ListTile(
           onTap: () async {
-            
+            GoRouter.of(context).push(RouteName.uploadQuizScreen);
+          },
+          title: const Text("Upload Quiz Level"),
+          leading: const Icon(Icons.quiz),
+        ),
+        ListTile(
+          onTap: () async {
+            GoRouter.of(context).push(RouteName.uploadQuestionScreen);
+          },
+          title: const Text("Upload Quiz Question"),
+          leading: const Icon(Icons.question_answer),
+        ),
+        ListTile(
+          onTap: () async {
             GoRouter.of(context).go(RouteName.homeScreen);
           },
           title: const Text("Back To Home"),
@@ -67,7 +79,6 @@ class AdminDrawerWidget extends StatelessWidget {
           title: const Text("Logout"),
           leading: const Icon(Icons.logout),
         ),
-        
       ]),
     );
   }

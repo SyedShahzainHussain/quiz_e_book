@@ -27,6 +27,10 @@ class RouteName {
   static const quizAnswerScreen = '/quiz_answer_screen';
   // * score_screen
   static const scoreScreen = '/score_screen';
+  // * upload_quiz_screen
+  static const uploadQuizScreen = '/upload_quiz_screen';
+  // * upload_question_screen
+  static const uploadQuestionScreen = '/upload_question_screen';
 
   // ! admin screen
   static const adminLoginScreen = '/admin_login_screen';

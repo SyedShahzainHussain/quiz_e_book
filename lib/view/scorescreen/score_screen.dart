@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
-import 'package:quiz_e_book/viewModel/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 
 class ScoreScreen extends StatelessWidget {
   const ScoreScreen({super.key});

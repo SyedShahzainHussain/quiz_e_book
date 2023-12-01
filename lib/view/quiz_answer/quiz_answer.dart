@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
+import 'package:quiz_e_book/model/qustion.dart';
 
 import 'package:quiz_e_book/resources/color/app_color.dart';
-import 'package:quiz_e_book/viewModel/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
+import 'package:quiz_e_book/widget/button_widget.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class QuizAnswer extends StatefulWidget {
-  final String id;
+  final String level;
 
-  const QuizAnswer({Key? key, required this.id});
+  const QuizAnswer({Key? key, required this.level});
 
   @override
   State<QuizAnswer> createState() => _QuizAnswerState();
@@ -20,9 +23,49 @@ class _QuizAnswerState extends State<QuizAnswer>
   late Animation animation;
   late AnimationController animationController;
   late PageController _pageController;
+
+  // ! advertising
+  RewardedAd? rewardedAd;
+  // InterstitialAd? interstitialAd;
+
+  void createRewardAdd() {
+    RewardedAd.load(
+        adUnitId: 'ca-app-pub-3940256099942544/5224354917',
+        request:
+            const AdRequest(contentUrl: "https://zeecodercraft-a5508.web.app/"),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(onAdLoaded: (ad) {
+          rewardedAd = ad;
+          setState(() {});
+        }, onAdFailedToLoad: (error) {
+          rewardedAd = null;
+          setState(() {});
+          print("Failed $error");
+        }));
+  }
+
+  void _showRewardAdd(List<Question> ques) {
+    if (rewardedAd != null) {
+      rewardedAd!.fullScreenContentCallback =
+          FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+        print("succes");
+        createRewardAdd();
+      }, onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        createRewardAdd();
+      });
+      rewardedAd!.show(
+          onUserEarnedReward: (ad, reward) => setState(() {
+                context.read<QuizViewModel>().rewardButtonPressed(
+                    _pageController, animationController, context, ques);
+              }));
+      rewardedAd = null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    createRewardAdd();
     _pageController = PageController();
     animationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 60));
@@ -30,7 +73,16 @@ class _QuizAnswerState extends State<QuizAnswer>
       ..addListener(() {
         setState(() {});
       });
-    animationController.forward();
+    animationController.forward().whenComplete(() {
+      final ques = context
+          .read<QuizViewModel>()
+          .getQuestion
+          .where((e) => e.level == widget.level)
+          .toList();
+      context
+          .read<QuizViewModel>()
+          .nextQuestion(_pageController, animationController, context, ques);
+    });
   }
 
   @override
@@ -42,8 +94,9 @@ class _QuizAnswerState extends State<QuizAnswer>
   @override
   Widget build(BuildContext context) {
     final quizViewModel = context.read<QuizViewModel>();
-    final ques =
-        quizViewModel.getQuestion.where((e) => e.level == widget.id).toList();
+    // ! checking the level is matach then show that question
+    final ques = context.read<QuizViewModel>().findbyLevel(widget.level);
+    //
     return Scaffold(
       backgroundColor: AppColors.bgColor,
       appBar: AppBar(
@@ -51,12 +104,17 @@ class _QuizAnswerState extends State<QuizAnswer>
           TextButton(
             onPressed: () {
               quizViewModel.nextQuestion(
-                  _pageController, animationController, context, ques);
+                _pageController,
+                animationController,
+                context,
+                ques,
+              );
             },
             child: const Text("Skip", style: TextStyle(color: AppColors.white)),
           )
         ],
       ),
+      // ignore: deprecated_member_use
       body: WillPopScope(
         onWillPop: () async {
           quizViewModel.updateTheQnNum(0);
@@ -190,13 +248,18 @@ class _QuizAnswerState extends State<QuizAnswer>
                                       : Icons.done;
                                 }
 
+                                bool isHidden(int indexToCheck) {
+                                  return quizViewModel.hiddenIncorrectIndices
+                                      .contains(indexToCheck);
+                                }
+
                                 return Consumer<QuizViewModel>(builder:
                                     (BuildContext context, QuizViewModel value,
                                         Widget? child) {
                                   return InkWell(
                                     onTap: () {
                                       quizViewModel.checkAns(
-                                          value.getQuestion[index],
+                                          ques[index],
                                           index1,
                                           animationController,
                                           _pageController,
@@ -211,48 +274,75 @@ class _QuizAnswerState extends State<QuizAnswer>
                                             color: getTheRightColor()),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '${index1 + 1}.${ques[index].options![index1]}',
-                                            style: TextStyle(
-                                              color: getTheRightColor(),
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 26,
-                                            width: 26,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(50.0),
-                                              border: Border.all(
-                                                color: getTheRightColor() ==
-                                                        Colors.grey
-                                                    ? Colors.transparent
-                                                    : getTheRightColor(),
+                                      child: AnimatedOpacity(
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        opacity: isHidden(index1) ? 0.0 : 1.0,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '${index1 + 1}.${ques[index].options![index1]}',
+                                              style: TextStyle(
+                                                color: getTheRightColor(),
+                                                fontSize: 16,
                                               ),
                                             ),
-                                            child: getTheRightColor() ==
-                                                    AppColors.black
-                                                ? null
-                                                : Icon(getTheRightIcon(),
-                                                    size: 16),
-                                          )
-                                        ],
+                                            Container(
+                                              height: 26,
+                                              width: 26,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(50.0),
+                                                border: Border.all(
+                                                  color: getTheRightColor() ==
+                                                          Colors.grey
+                                                      ? Colors.transparent
+                                                      : getTheRightColor(),
+                                                ),
+                                              ),
+                                              child: getTheRightColor() ==
+                                                      AppColors.black
+                                                  ? null
+                                                  : Icon(getTheRightIcon(),
+                                                      size: 16),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );
                                 });
-                              })
+                              }),
                             ],
                           ),
                         );
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                        child: const Text("Reward"),
+                        onPressed: () {
+                          //   context
+                          //       .read<QuizViewModel>()
+                          //       .rewardButtonPressed(_pageController,
+                          //           animationController, context, ques);
+
+                          //   // Hide the selected indices when the reward button is pressed
+                          //   int firstHiddenIndex =
+                          //       quizViewModel.hiddenIncorrectIndices[0];
+                          //   int secondHiddenIndex =
+                          //       quizViewModel.hiddenIncorrectIndices[1];
+
+                          //   // Now, you can hide or perform any other action with these indices
+                          //   print(
+                          //       "Hide indices: $firstHiddenIndex, $secondHiddenIndex");
+                          _showRewardAdd(ques);
+                        }),
+                  )
                 ],
               ),
             ),
