@@ -12,6 +12,7 @@ import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/dynamic_link_view_model/dynamic_link_view_model.dart';
 import 'package:quiz_e_book/viewModel/forgot_password_view_model/forgot_password_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
+import 'package:quiz_e_book/viewModel/get_single_user_view_model/get_single_user_view_model.dart';
 import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
@@ -22,9 +23,9 @@ import 'package:provider/provider.dart';
 import 'package:quiz_e_book/viewModel/reset_view_model/reset_view_model.dart';
 import 'package:quiz_e_book/viewModel/save_pdf_view_model/save_pdf_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
 import 'package:quiz_e_book/viewModel/uploadfle_view_model/upload_file_viewModel.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -97,6 +98,12 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => QuizViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ScoreViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GetSingleUserViewModel(),
         ),
       ],
       child: MaterialApp.router(

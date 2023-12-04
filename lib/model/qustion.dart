@@ -1,30 +1,48 @@
 class Question {
-  int? id, answer;
+  String? sId;
+  String? level;
+  String? id;
   String? question;
   List<String>? options;
-  String? level;
+  String? answer;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
 
-  Question({this.id, this.question, this.answer, this.options, this.level});
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = Map<String, dynamic>();
-    json['id'] = id;
-    json['answer'] = answer;
-    json['question'] = question;
-    json['options'] = options;
-    json['level'] = level;
-    return json;
-  }
+  Question(
+      {this.sId,
+      this.level,
+      this.id,
+      this.question,
+      this.options,
+      this.answer,
+      this.createdAt,
+      this.updatedAt,
+      this.iV});
 
   Question.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    answer = json['answer'];
-    question = json['question'];
-    options = (json['options'] as List<dynamic>?)
-        ?.where((option) => option is String && option.isNotEmpty)
-        .cast<String>()
-        .toList();
-
+    sId = json['_id'];
     level = json['level'];
+    id = json['id'];
+    question = json['question'];
+    options = json['options'].cast<String>();
+    answer = json['answer'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    iV = json['__v'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['level'] = this.level;
+    data['id'] = this.id;
+    data['question'] = this.question;
+    data['options'] = this.options;
+    data['answer'] = this.answer;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    data['__v'] = this.iV;
+    return data;
   }
 }

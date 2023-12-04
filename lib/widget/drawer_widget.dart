@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
+import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
@@ -18,6 +19,8 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  AuthViewModel authViewModel = AuthViewModel();
+
   @override
   void initState() {
     super.initState();
@@ -76,12 +79,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             ),
           ),
         ),
-        ListTile(
-          onTap: () {
-            GoRouter.of(context).push(RouteName.adminLoginScreen);
+        Builder(
+          builder: (BuildContext context) {
+            final authViewModel = Provider.of<AuthViewModel>(context);
+            final role = authViewModel.loginData?.role;
+            print(role);
+            if (role == 'admin') {
+              return ListTile(
+                onTap: () {
+                  GoRouter.of(context).push(RouteName.adminScreen);
+                },
+                title: const Text("Admin"),
+                leading: const FaIcon(FontAwesomeIcons.userPlus),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
           },
-          title: const Text("Admin"),
-          leading: const FaIcon(FontAwesomeIcons.userPlus),
         ),
       ]),
     );

@@ -34,14 +34,16 @@ class LoginViewModel with ChangeNotifier {
       final String? email = value["email"];
       final String? dob = value["dob"];
       final String? profilePhoto = value['profilePhoto'];
+      final String? role = value["role"];
       final loginData = LoginData(
-        token: token,
-        email: email,
-        dob: dob,
-        profilePhoto: profilePhoto,
-        sId: id,
-        username: username,
-      );
+          token: token,
+          email: email,
+          dob: dob,
+          profilePhoto: profilePhoto,
+          sId: id,
+          username: username,
+          role: role);
+
       authViewModel.saveUser(loginData);
       GoRouter.of(context).go(RouteName.homeScreen);
       Utils.flushBarErrorMessage(

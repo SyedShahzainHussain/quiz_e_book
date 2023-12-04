@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_e_book/model/qustion.dart';
+import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/utils/utils.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 import 'package:quiz_e_book/widget/text_form_widget.dart';
@@ -13,6 +14,13 @@ class AddQuestionForm extends StatefulWidget {
   State<AddQuestionForm> createState() => _AddQuestionFormState();
 }
 
+const List<String> items = [
+  '1',
+  '2',
+  '3',
+  '4',
+];
+
 class _AddQuestionFormState extends State<AddQuestionForm> {
   final TextEditingController levelController = TextEditingController();
   final TextEditingController questionController = TextEditingController();
@@ -20,6 +28,7 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
   final TextEditingController answerController = TextEditingController();
   final _form = GlobalKey<FormState>();
 
+  String? dropdownvalue = "0";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +90,7 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
                     if (value!.isEmpty) {
                       return "Please enter a valid option with comma";
                     }
-                    if (!value.endsWith(',') ) {
+                    if (!value.endsWith(',')) {
                       return "Comma is compulsory after each option";
                     }
 
@@ -89,29 +98,36 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
                   },
                 ),
                 const Gap(10),
-                Textformwidget(
-                  keyboardType: TextInputType.number,
-                  controller: answerController,
-                  title: 'Answer Index',
-                  onSave: (value) {
-                    answerController.text = value!;
-                  },
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please enter a answer number";
-                    }
-                    try {
-                      int level = int.parse(value);
-                      // Check if the number is negative or zero
-                      if (level < 0) {
-                        return "Enter a positive level number start from 0";
-                      }
-                    } catch (e) {
-                      return "Enter a valid number";
-                    }
-                    return null;
-                  },
-                ),
+                DropdownButton<String?>(
+                    hint: const Text('Select an option'),
+                    value: dropdownvalue,
+                    elevation: 10,
+                    underline: Container(
+                      height: 3,
+                      color: AppColors.bgColor,
+                    ),
+                    isExpanded: true,
+                    padding: const EdgeInsets.all(8.0),
+                    items: [
+                      const DropdownMenuItem<String?>(
+                        value: null,
+                        child: Text('Select an option'),
+                      ),
+                      ...items.map((String item) {
+                        int internalValue =
+                            int.parse(item) - 1; // Adjust the internal value
+                        return DropdownMenuItem<String?>(
+                          value: internalValue.toString(),
+                          child: Text(item),
+                        );
+                      }),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        dropdownvalue = value!;
+                      });
+                      print(dropdownvalue);
+                    }),
                 const Gap(10),
                 Consumer<QuizViewModel>(
                   builder: (context, value, _) => Buttonwidget(
@@ -133,36 +149,38 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
   void addQuestion() {
     final validate = _form.currentState!.validate();
     if (!validate) return;
-    if (validate) {
+    List<String> questionOptions = optionsController.text
+        .split(',')
+        .map((option) => option.trim()) // Trim each option
+        .where((option) => option.isNotEmpty)
+        .toList();
+    if (validate && questionOptions.length == 4 && dropdownvalue != null) {
       _form.currentState!.save();
 
-      List<String> questionOptions = optionsController.text
-          .split(',')
-          .map((option) => option.trim()) // Trim each option
-          .where((option) => option.isNotEmpty)
-          .toList();
-
-      Question newQuestion = Question(
-        level: levelController.text,
-        question: questionController.text,
-        options: questionOptions,
-        answer: int.tryParse(answerController.text),
-        id: DateTime.now().second, // Assign a unique ID based on your logic
-      );
-
-      context.read<QuizViewModel>().uploadQuestion(
-          newQuestion.id!,
-          newQuestion.question,
-          newQuestion.options!,
-          newQuestion.answer!,
-          newQuestion.level,
-          context);
-
-      // Clear text field controllers
-      levelController.clear();
-      questionController.clear();
-      optionsController.clear();
-      answerController.clear();
+      context
+          .read<QuizViewModel>()
+          .uploadQuestion(
+            DateTime.april,
+            questionController.text,
+            questionOptions,
+            dropdownvalue!,
+            levelController.text,
+            context,
+          )
+          .then((value) {
+        // Clear text field controllers
+        levelController.clear();
+        questionController.clear();
+        optionsController.clear();
+        answerController.clear();
+        dropdownvalue = null;
+      });
+    } else if (dropdownvalue == null) {
+      // Handle the case where dropdownvalue is null
+      Utils.flushBarErrorMessage(
+          "Please select a value from the dropdown", context);
+    } else {
+      Utils.flushBarErrorMessage("At least add 4 options", context);
     }
   }
 }

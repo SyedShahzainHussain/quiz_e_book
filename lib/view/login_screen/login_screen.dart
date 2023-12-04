@@ -37,7 +37,10 @@ class LoginScreen extends StatelessWidget {
           "email": emailController,
           "password": passwordController,
         };
-        context.read<LoginViewModel>().loginApi(body, context);
+        context.read<LoginViewModel>().loginApi(
+              body,
+              context,
+            );
       }
     }
 

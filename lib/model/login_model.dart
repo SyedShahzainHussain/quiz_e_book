@@ -5,6 +5,7 @@ class LoginData {
   String? dob;
   String? profilePhoto;
   String? token;
+  String? role;
 
   LoginData({
     this.sId,
@@ -13,8 +14,9 @@ class LoginData {
     this.dob,
     this.profilePhoto,
     this.token,
-  }); 
-  
+    this.role,
+  });
+
   LoginData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     username = json['username'];
@@ -22,6 +24,7 @@ class LoginData {
     dob = json['dob'];
     profilePhoto = json['profilePhoto'];
     token = json['token'];
+    role = json['role'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +35,7 @@ class LoginData {
     data['dob'] = dob;
     data['profilePhoto'] = profilePhoto;
     data['token'] = token;
+    data['role'] = role;
     return data;
   }
 }

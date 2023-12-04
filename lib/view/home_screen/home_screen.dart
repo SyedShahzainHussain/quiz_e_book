@@ -8,6 +8,7 @@ import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
+import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/widget/Score_widget.dart';
 
 import 'package:quiz_e_book/widget/drawer_widget.dart';
@@ -25,16 +26,43 @@ class _HomeScreenState extends State<HomeScreen> {
   GetAllUsers getAllUsers = GetAllUsers();
   Future<LoginData> getUserData() => AuthViewModel().getUser();
   SplashService splashService = SplashService();
+
+  Future<void> fetchData() async {
+    try {
+      print("rebuil");
+      LoginData userData = await getUserData();
+      await getAllUsers.getUserData(userData.token.toString());
+    } catch (error) {
+      // Handle errors if needed
+    }
+  }
+
+  bool _isReassembling = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Check if the screen is being reassembled
+    if (!_isReassembling) {
+      fetchData();
+    }
+
+    // Reset the flag after checking
+    _isReassembling = false;
+  }
+
   @override
   void initState() {
+    fetchData();
     super.initState();
 
-    getUserData()
-        .then((value) => {getAllUsers.getUserData(value.token.toString())});
+    context.read<QuizViewModel>().getToken();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: AppColors.white,
         appBar: AppBar(

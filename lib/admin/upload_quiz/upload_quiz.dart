@@ -7,8 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/data/services/permission/media_services.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
+import 'package:quiz_e_book/model/login_model.dart';
 
 import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
 import 'package:quiz_e_book/widget/text_form_widget.dart';
@@ -21,6 +23,8 @@ class UploadQuiz extends StatefulWidget {
 }
 
 class _UploadQuizState extends State<UploadQuiz> {
+  Future<LoginData> getUserData() => AuthViewModel().getUser();
+
   final _form = GlobalKey<FormState>();
   String? level;
 
@@ -29,9 +33,16 @@ class _UploadQuizState extends State<UploadQuiz> {
     if (!validate) return;
     if (validate && image != null) {
       _form.currentState!.save();
-      context
-          .read<QuizViewModel>()
-          .uploadImageToFirebase(image, context, level!);
+      getUserData().then((value) {
+        print(value.token);
+        context.read<QuizViewModel>().uploadQuiz(
+              image,
+              context,
+              level!,
+              value.token!,
+              true,
+            );
+      });
     }
   }
 

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/admin/admin_drawer_widget/admin_drawer_widget.dart';
 import 'package:quiz_e_book/data/response/status.dart';
 import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
@@ -45,15 +47,42 @@ class _AdminScreenState extends State<AdminScreen> {
               case Status.error:
                 if (value.apiresponse.message!
                     .contains("UnAuthorized Request")) {
-                  return const Center(
-                      child: Text(
-                    "Token Expired! Please Login Again",
-                    textAlign: TextAlign.center,
+                  return Center(
+                      child: AlertDialog(
+                    title: const Text("Token Expire"),
+                    content: const Text("You have to login again!"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          AuthViewModel().remove().then(
+                              (value) => context.go(RouteName.loginScreen));
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          child: const Text("Login"),
+                        ),
+                      ),
+                    ],
                   ));
                 } else if (value.apiresponse.message!
                     .contains("TimeoutException")) {
-                  return const Center(
-                      child: Text("Time Out! Please Login Again"));
+                  return Center(
+                      child: AlertDialog(
+                    title: const Text("Token Expire"),
+                    content: const Text("You have to login again!"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          AuthViewModel().remove().then(
+                              (value) => context.go(RouteName.loginScreen));
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          child: const Text("Login"),
+                        ),
+                      ),
+                    ],
+                  ));
                 }
                 return Center(
                   child: Text(
@@ -91,7 +120,6 @@ class _AdminScreenState extends State<AdminScreen> {
                                         .apiresponse
                                         .data![index]
                                         .profilePhoto!)),
-                                
                                 title: Text(
                                     value.apiresponse.data![index].username!,
                                     style: Theme.of(context)

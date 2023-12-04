@@ -1,10 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 import 'package:share_plus/share_plus.dart';
@@ -56,8 +59,6 @@ class _EbookState extends State<Ebook> {
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () {
-                     
-
                       GoRouter.of(context).push(
                         RouteName.pdfviewScreen,
                         extra: {
@@ -199,7 +200,8 @@ class PdfViewScreen extends StatefulWidget {
 class _PdfViewScreenState extends State<PdfViewScreen> {
   late PdfViewerController _pdfViewerController;
   final GlobalKey<SfPdfViewerState> _pdfViewerState = GlobalKey();
-
+  bool _isLoading = true;
+  File? pdf;
   @override
   void initState() {
     _pdfViewerController = PdfViewerController();
@@ -213,7 +215,6 @@ class _PdfViewScreenState extends State<PdfViewScreen> {
         appBar: AppBar(
           title: Text(widget.data['title'].toString()),
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.download)),
             IconButton(
                 onPressed: () {
                   _pdfViewerState.currentState!.openBookmarkView();
@@ -237,6 +238,8 @@ class _PdfViewScreenState extends State<PdfViewScreen> {
                 widget.data['pdf'],
                 controller: _pdfViewerController,
                 key: _pdfViewerState,
+                scrollDirection: PdfScrollDirection.vertical,
+                pageLayoutMode: PdfPageLayoutMode.single,
               ));
   }
 }

@@ -3,9 +3,7 @@ import 'package:quiz_e_book/model/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthViewModel with ChangeNotifier {
-
-
-LoginData? _loginData;
+  LoginData? _loginData;
 
   LoginData? get loginData => _loginData;
 
@@ -13,6 +11,8 @@ LoginData? _loginData;
     _loginData = await getUser();
     notifyListeners();
   }
+
+  
 
   Future<bool> saveUser(LoginData loginData) async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -22,6 +22,7 @@ LoginData? _loginData;
     sp.setString("email", loginData.email.toString());
     sp.setString("uuid", loginData.sId.toString());
     sp.setString("dob", loginData.dob.toString());
+    sp.setString("role", loginData.role.toString());
     notifyListeners();
     return true;
   }
@@ -34,6 +35,7 @@ LoginData? _loginData;
     final String? email = sp.getString("email");
     final String? uuid = sp.getString("uuid");
     final String? dob = sp.getString("dob");
+    final String? role = sp.getString("role");
     return LoginData(
       token: token,
       username: username,
@@ -41,8 +43,11 @@ LoginData? _loginData;
       sId: uuid,
       profilePhoto: profileImage,
       dob: dob,
+      role: role,
     );
   }
+
+ 
 
   Future<bool> remove() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -52,6 +57,9 @@ LoginData? _loginData;
     sp.remove("email");
     sp.remove("uuid");
     sp.remove("dob");
+    sp.remove("role");
     return true;
   }
+
+
 }

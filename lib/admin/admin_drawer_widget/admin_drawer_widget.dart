@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminDrawerWidget extends StatelessWidget {
   const AdminDrawerWidget({super.key});
@@ -68,16 +67,6 @@ class AdminDrawerWidget extends StatelessWidget {
           },
           title: const Text("Back To Home"),
           leading: const Icon(Icons.backspace),
-        ),
-        ListTile(
-          onTap: () async {
-            SharedPreferences sharedPreferences =
-                await SharedPreferences.getInstance();
-            sharedPreferences.remove("isLogin");
-            GoRouter.of(context).go(RouteName.homeScreen);
-          },
-          title: const Text("Logout"),
-          leading: const Icon(Icons.logout),
         ),
       ]),
     );

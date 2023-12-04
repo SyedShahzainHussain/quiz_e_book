@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
 
 class ScoreScreen extends StatelessWidget {
   const ScoreScreen({super.key});
@@ -45,7 +47,11 @@ class ScoreScreen extends StatelessWidget {
             quizComplete = "Quiz completed successfully.";
             buttonText = "Back to Home";
             value.unlockNextLevel();
-          
+            AuthViewModel().getUser().then((value2) {
+              final body = {"scorrer": (value.numOfCorrectAns * 10).toString()};
+              context.read<ScoreViewModel>().updateScore(body, context,
+                  headers: {"Authorization": "Bearer ${value2.token}"});
+            });
           }
           return Center(
             child: Padding(
@@ -177,13 +183,17 @@ class ScoreScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          context.go(RouteName.homeScreen);
-                          data.resetcorrectAns();
-                          data.updateTheQnNum(0);
-                        },
-                        child: Text(buttonText))
+                    Consumer<ScoreViewModel>(
+                      builder: (context, value, _) => ElevatedButton(
+                          onPressed: () {
+                            context.go(RouteName.homeScreen);
+                            data.resetcorrectAns();
+                            data.updateTheQnNum(0);
+                          },
+                          child: value.loading
+                              ? const Text("Loading....")
+                              : Text(buttonText)),
+                    )
                   ]),
             ),
           );

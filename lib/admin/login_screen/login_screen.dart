@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/extension/sizedbox_extension/sizedbox_extension.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
-import 'package:quiz_e_book/utils/utils.dart';
+import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreenAdmin extends StatefulWidget {
   const LoginScreenAdmin({super.key});
@@ -22,40 +23,11 @@ class _LoginScreenAdminState extends State<LoginScreenAdmin> {
   final _form = GlobalKey<FormState>();
 
   ValueNotifier<bool> isObsecure = ValueNotifier<bool>(false);
-  String? email;
-  String? password;
-  bool? isLogin;
-  bool _isLoading = false;
-
-  Future<void> getEmailPasswordFromSharedPreference() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    email = sp.getString("email") ?? '';
-    password = sp.getString("password") ?? '';
-    isLogin = sp.getBool('isLogin') ?? false;
-  }
-
-  addEmailToSharedPreferences() async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
-
-    sp.setString("email", "Admin@gmail.com");
-    sp.setString("password", "admin12345");
-  }
-
+  
   @override
   void initState() {
-    addEmailToSharedPreferences();
-    getEmailPasswordFromSharedPreference()
-        .then((value) => chechUserIsLoginOrNot(isLogin!));
-
     super.initState();
-  }
-
-  void chechUserIsLoginOrNot(bool isLogin) {
-    if (isLogin == false) {
-      context.go(RouteName.adminLoginScreen);
-    } else {
-      context.go(RouteName.adminScreen);
-    }
+    // checkAuthentication(context);
   }
 
   void onSave() async {
@@ -63,26 +35,14 @@ class _LoginScreenAdminState extends State<LoginScreenAdmin> {
     if (!validate) {
       return;
     }
-    _form.currentState!.save();
-    setState(() {
-      _isLoading = true;
-    });
-
-    if (emailcontroller.text == email && passwordcontroller.text == password) {
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      sp.setBool('isLogin', true);
-      await Future.delayed(const Duration(seconds: 5), () {
-        setState(() {
-          _isLoading = false;
-        });
-
-        context.go(RouteName.adminScreen);
-      });
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      Utils.flushBarErrorMessage("Wrong Credentials ", context);
+    if (validate) {
+      _form.currentState!.save();
+      
+      final body = {
+        "email": emailcontroller.text,
+        "password": passwordcontroller.text,
+      };
+      context.read<LoginViewModel>().loginApi(body, context);
     }
   }
 
@@ -180,12 +140,14 @@ class _LoginScreenAdminState extends State<LoginScreenAdmin> {
                       },
                     ),
                     10.height,
-                    Buttonwidget(
-                      onTap: () {
-                        onSave();
-                      },
-                      text: "Login",
-                      isLoading: _isLoading,
+                    Consumer<LoginViewModel>(
+                      builder: (context, value, chil) => Buttonwidget(
+                        onTap: () {
+                          onSave();
+                        },
+                        text: "Login",
+                        isLoading: value.isLoading,
+                      ),
                     ),
                   ]),
             ),

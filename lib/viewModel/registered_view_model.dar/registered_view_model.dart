@@ -37,8 +37,12 @@ class RegisteredViewModel with ChangeNotifier {
     request.fields['email'] = email.toString();
     request.fields['password'] = password.toString();
     request.fields['dob'] = dateofbirth.toString();
-    var file = await MultipartFile.fromPath("image", image!.path,
-        filename: "profile_photo.jpg", contentType: MediaType("image", "jpg"));
+    var file = await MultipartFile.fromPath(
+      "image",
+      image!.path,
+      filename: "profile_photo.jpg",
+      contentType: MediaType("image", "jpg"),
+    );
     request.files.add(file);
     try {
       var response = await request.send();
@@ -65,6 +69,7 @@ class RegisteredViewModel with ChangeNotifier {
         final errorJson = jsonDecode(errorResponse);
         final errorMessage =
             errorJson['error'] ?? 'An unexpected error occurred';
+
         Utils.flushBarErrorMessage(errorMessage, context);
         setLoading(false);
       } else {

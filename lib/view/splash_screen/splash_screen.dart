@@ -11,17 +11,39 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with WidgetsBindingObserver {
   SplashService splashService = SplashService();
-
   @override
   void initState() {
     super.initState();
-    splashService.onTokenExpired.listen((event) {
-      Utils.flushBarErrorMessage("Token Expire", context);
-      context.go(RouteName.loginScreen);
+    WidgetsBinding.instance?.addObserver(this);
+
+    // Listen to the onTokenExpired stream
+    splashService.onTokenExpired.listen((isTokenExpired) {
+      if (isTokenExpired) {
+        // Redirect to login screen
+        Navigator.pushReplacementNamed(context, RouteName.loginScreen);
+      }
     });
+
+    // Check authentication
     splashService.checkAuthentication(context);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Check for token expiration when the app is resumed
+      print("login");
+      splashService.checkAuthentication(context);
+    }
   }
 
   @override

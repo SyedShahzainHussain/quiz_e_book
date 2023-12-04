@@ -22,10 +22,15 @@ class NetworkApiServices extends BaseApiServices {
   }
 
   @override
-  Future getPostApiResponse(String url, dynamic body) async {
+  Future getPostApiResponse(String url, dynamic body,
+      {Map<String, String>? headers}) async {
     dynamic responseJson;
     try {
-      final response = await post(Uri.parse(url), body: body);
+      final response = await post(
+        Uri.parse(url),
+        body: body,
+        headers: headers,
+      );
 
       responseJson = returnResponse(response);
     } on SocketException {
@@ -53,6 +58,7 @@ class NetworkApiServices extends BaseApiServices {
   dynamic returnResponse(Response.Response response) {
     switch (response.statusCode) {
       case 200:
+      case 201:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
       case 400:
@@ -67,4 +73,22 @@ class NetworkApiServices extends BaseApiServices {
             'Error occured while communicate with serverwith status code${response.statusCode}');
     }
   }
+
+  @override
+  Future updateAPiResponse(String url, dynamic body,
+      {Map<String, String>? headers}) async {
+    dynamic responseJson;
+    try {
+      final response = await put(
+        Uri.parse(url),
+        body: body,
+        headers: headers,
+      );
+      responseJson = returnResponse(response);
+    } on SocketException {
+      throw FetchDataException("No Internet Connection");
+    }
+    return responseJson;
+  }
+  
 }

@@ -30,10 +30,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         title: const Text("Profile Screen"),
       ),
       body: Consumer<AuthViewModel>(builder: (context, value, child) {
-        String dateString = value.loginData?.dob.toString() ?? "loading...";
-        DateTime dateTime = DateTime.parse(dateString);
-        String formattedDate =
-            "${dateTime.year}/${dateTime.month}/${dateTime.day}";
+        String? dateString =
+            value.loginData?.dob?.toString() ?? "2003-02-05 00:00:00.000";
+        DateTime? dateTime = DateTime.tryParse(dateString);
+        String formattedDate = dateTime != null
+            ? "${dateTime.year}/${dateTime.month}/${dateTime.day}"
+            : "Invalid Date";
 
         return Padding(
           padding: const EdgeInsets.all(12.0),
@@ -44,19 +46,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 CircleAvatar(
                   radius: context.screenwidth * .15,
                   backgroundImage: NetworkImage(value.loginData?.profilePhoto ??
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcNPOPDCWiEvN0x11fc_02MzdhtzcLOwg-qg&usqp=CAU'),
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfGtrAgOIg4722RdOT1PRNtcq0fXIjIzlPqQ&usqp=CAU'),
                 ),
-                // Positioned(
-                //   bottom: -10,
-                //   right: 0,
-                //   child: IconButton(
-                //     onPressed: () {},
-                //     icon: const Icon(
-                //       Icons.camera_alt,
-                //     ),
-                //   ),
-                // ),
-
                 Card(
                   color: AppColors.bgColor,
                   shape: RoundedRectangleBorder(
@@ -79,7 +70,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                               Expanded(
                                 child: Text(
-                                  value.loginData?.username ?? 'loading..',
+                                  value.loginData?.username ?? 'Admin',
                                   maxLines: 1,
                                   style: const TextStyle(
                                       color: AppColors.white,
@@ -103,7 +94,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                               Expanded(
                                 child: Text(
-                                  value.loginData?.email ?? 'loading..',
+                                  value.loginData?.email ?? 'Admin@gmail.com',
                                   maxLines: 1,
                                   style: const TextStyle(
                                       color: AppColors.white,
@@ -147,9 +138,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       text: "Logout",
                       onTap: () {
                         data.remove().then((value2) {
-                             return  GoRouter.of(context)
-                                      .go(RouteName.loginScreen);
-                        
+                          return GoRouter.of(context).go(RouteName.loginScreen);
                         });
                       }),
                 )

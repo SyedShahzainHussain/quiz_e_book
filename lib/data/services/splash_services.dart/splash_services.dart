@@ -7,10 +7,10 @@ import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashService with ChangeNotifier {
   Future<LoginData> getUserData() => AuthViewModel().getUser();
+  AuthViewModel authViewModel = AuthViewModel();
   final __tokenExpiredController = StreamController<bool>();
   Stream<bool> get onTokenExpired => __tokenExpiredController.stream;
 
@@ -21,9 +21,9 @@ class SplashService with ChangeNotifier {
       } else {
         bool isTokenExpired = JwtDecoder.isExpired(value.token.toString());
         if (isTokenExpired) {
-          SharedPreferences sp = await SharedPreferences.getInstance();
-          sp.remove("token");
+          authViewModel.remove();
           __tokenExpiredController.add(true);
+          // ignore: use_build_context_synchronously
           GoRouter.of(context).go(RouteName.loginScreen);
         }
 
