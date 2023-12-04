@@ -11,6 +11,8 @@ class AppUrl {
   static const getQuestion = '$baseUrl/questions';
   static const updateScore = '$baseUrl/scorrer';
   static const singleUser = '$baseUrl/user';
+  static const increment = '$baseUrl/scorrer/increment';
+  static const decrement = '$baseUrl/scorrer/decrement';
 
 
 }

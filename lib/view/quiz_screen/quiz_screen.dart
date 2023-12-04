@@ -22,6 +22,7 @@ class _QuizScreenState extends State<QuizScreen> {
     super.initState();
     context.read<QuizViewModel>().getProducts(context);
     context.read<QuizViewModel>().getQuestions();
+    context.read<QuizViewModel>().getAllUser();
   }
 
   @override
@@ -38,6 +39,7 @@ class _QuizScreenState extends State<QuizScreen> {
             future: Future.wait([
               context.read<QuizViewModel>().getProducts(context),
               context.read<QuizViewModel>().getQuestions(),
+              context.read<QuizViewModel>().getAllUser(),
             ]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,6 +57,8 @@ class _QuizScreenState extends State<QuizScreen> {
                 );
               } else {
                 return Consumer<QuizViewModel>(builder: (context, value, _) {
+                  final List<dynamic> unlockedLevels =
+                      context.read<QuizViewModel>().unlockedLevels;
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -64,36 +68,16 @@ class _QuizScreenState extends State<QuizScreen> {
                       mainAxisSpacing: 5,
                     ),
                     itemBuilder: (context, index) {
+                      final isLevelUnlocked = unlockedLevels.contains(
+                          int.tryParse(value.getQuestion[index].level!));
                       final ques = context
                           .read<QuizViewModel>()
                           .findbyLevel(value.getQuestion[index].level!);
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (index == 0) {
-                          value.updateQuizLocked(value.getQuiz[0].id!, 0);
-                        }
-                      });
+
                       return InkWell(
                         hoverColor: AppColors.bgColor,
                         onTap: () {
-                          if (value.getQuiz[index].isLoacked) {
-                            // Level is locked, show the dialog
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Level Locked'),
-                                content: const Text(
-                                    'This level is currently locked.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          } else {
+                          if (isLevelUnlocked) {
                             // Level is unlocked, navigate to the quiz screen
                             String selectedLevel = value.getQuiz[index].level!;
                             if (value
@@ -120,6 +104,24 @@ class _QuizScreenState extends State<QuizScreen> {
                                 ),
                               );
                             }
+                          } else {
+                            // Level is locked, show the dialog
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Level Locked'),
+                                content: const Text(
+                                    'This level is currently locked.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
                           }
                         },
                         child: Padding(

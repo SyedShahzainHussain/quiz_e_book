@@ -9,7 +9,8 @@ class Users {
   int? iV;
   String? role;
   String? id;
-  String? scorrer;
+  int? scorrer;
+  List<dynamic>? unlocked;
 
   Users({
     this.sId,
@@ -23,8 +24,29 @@ class Users {
     this.role,
     this.id,
     this.scorrer,
+    this.unlocked,
   });
 
+  // Convert the object to a JSON representation
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {};
+    json['_id'] = sId;
+    json['username'] = username;
+    json['email'] = email;
+    json['dob'] = dob;
+    json['profilePhoto'] = profilePhoto;
+    json['createdAt'] = createdAt;
+    json['updatedAt'] = updatedAt;
+    json['__v'] = iV;
+    json['role'] = role;
+    json['id'] = id;
+    json['scorrer'] = scorrer;
+    json['unlocked'] = unlocked;
+
+    return json;
+  }
+
+  // Create a Users object from JSON
   Users.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     username = json['username'];
@@ -37,5 +59,6 @@ class Users {
     role = json['role'];
     id = json['id'];
     scorrer = json['scorrer'];
+    unlocked = json['unlocked'];
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
@@ -8,7 +7,7 @@ class PositionHolderWidget extends StatelessWidget {
   final double width;
   final String position;
   final String winnername;
-  final String totalScore;
+  final int totalScore;
   final Color positionColor;
   final String winnerprofile;
 
@@ -70,10 +69,12 @@ class PositionHolderWidget extends StatelessWidget {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
+                                  .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
                             ),
                             Text(
-                              totalScore,
+                              totalScore.toString(),
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -130,7 +131,8 @@ class PositionHolderWidget extends StatelessWidget {
                             color: positionColor,
                             shape: BoxShape.circle,
                           ),
-                          child: Text(position,
+                          child: Text(
+                             position,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!

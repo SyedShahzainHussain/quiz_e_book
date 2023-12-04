@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/data/response/status.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/model/login_model.dart';
 
 import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/resources/urls/app_url.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/get_single_user_view_model/get_single_user_view_model.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
 
 class QuizAnswer extends StatefulWidget {
   final String level;
@@ -72,6 +75,16 @@ class _QuizAnswerState extends State<QuizAnswer>
 
   @override
   Widget build(BuildContext context) {
+     animationController.forward().whenComplete(() {
+      final ques = context
+          .read<QuizViewModel>()
+          .getQuestion
+          .where((e) => e.level == widget.level)
+          .toList();
+      context
+          .read<QuizViewModel>()
+          .nextQuestion(_pageController, animationController, context, ques);
+    });
     final quizViewModel = context.read<QuizViewModel>();
     // ! checking the level is matach then show that question
     final ques = context.read<QuizViewModel>().findbyLevel(widget.level);
@@ -100,8 +113,8 @@ class _QuizAnswerState extends State<QuizAnswer>
                   case Status.completed:
                     return TextButton(
                       onPressed: () async {
-                        final score = int.parse(
-                            getAllUsers.apiresponse.data!['scorrer'] ?? '0');
+                        final score =
+                            getAllUsers.apiresponse.data!['scorrer'] ?? 0;
                         if (score == 0) {
                           showDialog(
                             context:
@@ -122,12 +135,23 @@ class _QuizAnswerState extends State<QuizAnswer>
                             ),
                           );
                         } else {
-                          quizViewModel.nextQuestion(
-                            _pageController,
-                            animationController,
-                            context,
-                            ques,
-                          );
+                          AuthViewModel().getUser().then((value2) {
+                            int score = 10;
+                            final body = {
+                              "decrementValue": score.toString(),
+                            };
+                            context.read<ScoreViewModel>().updateScore(
+                                AppUrl.decrement, body, context, headers: {
+                              "Authorization": "Bearer ${value2.token}"
+                            }).then((value) {
+                              quizViewModel.nextQuestion(
+                                _pageController,
+                                animationController,
+                                context,
+                                ques,
+                              );
+                            });
+                          });
                         }
                       },
                       child: const Text("Skip",

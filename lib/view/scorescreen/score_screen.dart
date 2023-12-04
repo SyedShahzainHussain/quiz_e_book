@@ -3,9 +3,12 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
+import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+import 'package:quiz_e_book/resources/urls/app_url.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
 
@@ -15,6 +18,8 @@ class ScoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = context.read<QuizViewModel>();
+    Future<LoginData> getUserData() => AuthViewModel().getUser();
+    GetAllUsers getAllUsers = GetAllUsers();
     String message;
     Color messageColor;
     String image;
@@ -48,11 +53,24 @@ class ScoreScreen extends StatelessWidget {
             buttonText = "Back to Home";
             value.unlockNextLevel();
             AuthViewModel().getUser().then((value2) {
-              final body = {"scorrer": (value.numOfCorrectAns * 10).toString()};
-              context.read<ScoreViewModel>().updateScore(body, context,
+              int score = value.numOfCorrectAns * 10;
+              final body = {
+                "incrementValue": score.toString(),
+              };
+              context.read<ScoreViewModel>().updateScore(
+                  AppUrl.increment, body, context,
                   headers: {"Authorization": "Bearer ${value2.token}"});
             });
           }
+          Future<void> fetchData() async {
+            try {
+              LoginData userData = await getUserData();
+              await getAllUsers.getUserData(userData.token.toString());
+            } catch (error) {
+              // Handle errors if needed
+            }
+          }
+
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(22.0),
@@ -186,9 +204,11 @@ class ScoreScreen extends StatelessWidget {
                     Consumer<ScoreViewModel>(
                       builder: (context, value, _) => ElevatedButton(
                           onPressed: () {
-                            context.go(RouteName.homeScreen);
-                            data.resetcorrectAns();
-                            data.updateTheQnNum(0);
+                            fetchData().then((value) {
+                              context.go(RouteName.homeScreen);
+                              data.resetcorrectAns();
+                              data.updateTheQnNum(0);
+                            });
                           },
                           child: value.loading
                               ? const Text("Loading....")

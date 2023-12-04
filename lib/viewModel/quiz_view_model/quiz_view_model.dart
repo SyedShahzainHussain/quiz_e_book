@@ -11,6 +11,7 @@ import 'package:quiz_e_book/admin/repository/upload_question.dart';
 import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/model/quiz_model.dart';
 import 'package:quiz_e_book/model/qustion.dart';
+import 'package:quiz_e_book/model/users.dart';
 import 'package:quiz_e_book/repositories/quiz_repo/quiz_repository.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/resources/urls/app_url.dart';
@@ -48,6 +49,31 @@ class QuizViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  List<Users> _users = [];
+  List<Users> get getUsers => _users;
+  List<List<dynamic>> _allUnlockedArrays = [];
+  List<List<dynamic>> get allUnlockedArrays => _allUnlockedArrays;
+  Future<void> getAllUser() async {
+    try {
+      final snapshot = await QuizRepository().getUsersData(token!);
+      List<Users> users = [];
+      List<List<dynamic>> allUnlockedArrays = [];
+      for (var docs in snapshot) {
+        Users user = Users.fromJson(docs.toJson());
+        users.add(user);
+        if (user.unlocked != null) {
+          allUnlockedArrays.add(user.unlocked!);
+        }
+      }
+      _users = users;
+      _allUnlockedArrays = allUnlockedArrays;
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching quiz data: $e");
+      }
+    }
+  }
   // * quiz question
 
   List<Question> _question = [];
