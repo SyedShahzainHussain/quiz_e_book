@@ -9,6 +9,7 @@ import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.d
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/routes.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:quiz_e_book/viewModel/delete_user_view_model/delete_user_view_model.dart';
 import 'package:quiz_e_book/viewModel/dynamic_link_view_model/dynamic_link_view_model.dart';
 import 'package:quiz_e_book/viewModel/forgot_password_view_model/forgot_password_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
@@ -24,6 +25,7 @@ import 'package:quiz_e_book/viewModel/reset_view_model/reset_view_model.dart';
 import 'package:quiz_e_book/viewModel/save_pdf_view_model/save_pdf_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
+import 'package:quiz_e_book/viewModel/update_level_view_model/update_level_view_model.dart';
 import 'package:quiz_e_book/viewModel/uploadfle_view_model/upload_file_viewModel.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -104,6 +106,12 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => GetSingleUserViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UpdateLevelViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DeleteUserViewModel(),
         ),
       ],
       child: MaterialApp.router(

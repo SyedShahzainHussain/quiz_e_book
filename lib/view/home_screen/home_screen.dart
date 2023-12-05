@@ -166,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           // Combine the users in the desired order
                           List<Users> topThreeUsers =
-                              secondUser + topUser + thirdUser;
+                              topUser + secondUser + thirdUser;
 
                           return Column(
                             children: [
@@ -176,23 +176,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: topThreeUsers.map((user) {
                                     final index = topThreeUsers.indexOf(user);
-                                    final isCentered = index == 1;
+                                    final isCentered = index == 0;
 
                                     int? position;
                                     switch (index) {
                                       case 0:
-                                        position = isCentered
-                                            ? 1
-                                            : 2; // Set to 2 if centered, else 1
+                                        position =
+                                            1; // Set to 2 if centered, else 1
                                         break;
                                       case 1:
                                         position =
-                                            1; // Always set to 1 for the centered user
+                                            2; // Always set to 1 for the centered user
                                         break;
                                       case 2:
-                                        position = isCentered
-                                            ? 2
-                                            : 3; // Set to 2 if centered, else 3
+                                        position =
+                                            3; // Set to 2 if centered, else 3
                                         break;
                                     }
                                     return PositionHolderWidget(

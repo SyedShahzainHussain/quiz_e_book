@@ -11,6 +11,7 @@ import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
+import 'package:quiz_e_book/viewModel/update_level_view_model/update_level_view_model.dart';
 
 class ScoreScreen extends StatelessWidget {
   const ScoreScreen({super.key});
@@ -58,8 +59,20 @@ class ScoreScreen extends StatelessWidget {
                 "incrementValue": score.toString(),
               };
               context.read<ScoreViewModel>().updateScore(
-                  AppUrl.increment, body, context,
-                  headers: {"Authorization": "Bearer ${value2.token}"});
+                  AppUrl.increment, body, context, headers: {
+                "Authorization": "Bearer ${value2.token}"
+              }).then((value3) {
+                final currentLevel = int.parse(value.level);
+                int newLevel = currentLevel + 1;
+                String newLevelString = newLevel.toString();
+
+                final body2 = {"newString": newLevelString.toString()};
+                context.read<UpdateLevelViewModel>().updateLevel(
+                      value2.token!,
+                      body2,
+                      context,
+                    );
+              });
             });
           }
           Future<void> fetchData() async {

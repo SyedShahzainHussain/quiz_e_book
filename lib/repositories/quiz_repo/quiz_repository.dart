@@ -18,18 +18,26 @@ class QuizRepository {
   }
 
   Future<List<Question>> getQuestionData(String token) async {
-    dynamic response = await baseApiServices.getGetApiResponse(AppUrl.getQuestion,
+    dynamic response = await baseApiServices.getGetApiResponse(
+        AppUrl.getQuestion,
         headers: {"Authorization": "Bearer $token"});
 
     var data = response as List;
     return data.map((dynamic json) => Question.fromJson(json)).toList();
   }
 
- Future<List<Users>> getUsersData(String token) async {
-    dynamic response = await baseApiServices.getGetApiResponse(AppUrl.getAllUsers,
-        headers: {"Authorization": "Bearer $token"});
+  Future<Map<String,dynamic>> getSIngleData(
+    String token,
+    String userid,
+  ) async {
+    try {
+      dynamic response = await baseApiServices.getGetApiResponse(
+          '${AppUrl.singleUser}/$userid',
+          headers: {"Authorization": "Bearer $token"});
 
-    var data = response as List;
-    return data.map((dynamic json) => Users.fromJson(json)).toList();
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

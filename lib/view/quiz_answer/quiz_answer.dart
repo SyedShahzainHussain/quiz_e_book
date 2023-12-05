@@ -319,7 +319,8 @@ class _QuizAnswerState extends State<QuizAnswer>
                                             animationController,
                                             _pageController,
                                             context,
-                                            ques);
+                                            ques,
+                                            widget.level);
                                       },
                                       child: Container(
                                         margin:

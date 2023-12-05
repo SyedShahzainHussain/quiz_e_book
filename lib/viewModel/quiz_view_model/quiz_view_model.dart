@@ -51,29 +51,38 @@ class QuizViewModel with ChangeNotifier {
 
   List<Users> _users = [];
   List<Users> get getUsers => _users;
-  List<List<dynamic>> _allUnlockedArrays = [];
-  List<List<dynamic>> get allUnlockedArrays => _allUnlockedArrays;
+  List<dynamic> _allUnlockedArrays = [];
+  List<dynamic> get allUnlockedArrays => _allUnlockedArrays;
+
   Future<void> getAllUser() async {
     try {
-      final snapshot = await QuizRepository().getUsersData(token!);
-      List<Users> users = [];
-      List<List<dynamic>> allUnlockedArrays = [];
-      for (var docs in snapshot) {
-        Users user = Users.fromJson(docs.toJson());
-        users.add(user);
-        if (user.unlocked != null) {
-          allUnlockedArrays.add(user.unlocked!);
+      final value = await getUserData();
+
+      if (value != null) {
+        final user =
+            await QuizRepository().getSIngleData(value.token!, value.sId!);
+
+        if (user != null && user['unlocked'] != null) {
+          List<dynamic> unlockedLevels = user['unlocked']!;
+          print('unlocked $unlockedLevels');
+
+          // Add the unlockedLevels to _allUnlockedArrays
+          _allUnlockedArrays.clear();
+          _allUnlockedArrays.addAll(unlockedLevels);
+          print('locked $allUnlockedArrays');
+
+          // Optionally, you can also update _users with the user
+
+          notifyListeners();
         }
       }
-      _users = users;
-      _allUnlockedArrays = allUnlockedArrays;
-      notifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print("Error fetching quiz data: $e");
       }
     }
   }
+
   // * quiz question
 
   List<Question> _question = [];
@@ -356,6 +365,14 @@ class QuizViewModel with ChangeNotifier {
   int _questiionLength = 1;
   int get questiionLength => _questiionLength;
 
+  String _level = "";
+  String get level => _level;
+
+  void levelClear() {
+    _level = "";
+    notifyListeners();
+  }
+
   void incrementQuestionNumber() {
     _questionNumber++;
     notifyListeners();
@@ -387,8 +404,10 @@ class QuizViewModel with ChangeNotifier {
     PageController pageController,
     BuildContext context,
     List<Question> ques,
+    String level,
   ) {
     // because once user press any option then it will run
+    _level = level;
     _isAnswered = true;
     _correctAns = int.tryParse(question.answer!);
     _selectedAns = selectedIndex;

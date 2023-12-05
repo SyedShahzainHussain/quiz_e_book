@@ -27,6 +27,8 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<dynamic> unlockedLevels =
+        context.read<QuizViewModel>().allUnlockedArrays;
     return Scaffold(
       backgroundColor: AppColors.bgColor,
       appBar: AppBar(
@@ -57,8 +59,6 @@ class _QuizScreenState extends State<QuizScreen> {
                 );
               } else {
                 return Consumer<QuizViewModel>(builder: (context, value, _) {
-                  final List<dynamic> unlockedLevels =
-                      context.read<QuizViewModel>().unlockedLevels;
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -68,8 +68,8 @@ class _QuizScreenState extends State<QuizScreen> {
                       mainAxisSpacing: 5,
                     ),
                     itemBuilder: (context, index) {
-                      final isLevelUnlocked = unlockedLevels.contains(
-                          int.tryParse(value.getQuestion[index].level!));
+                      final isLevelUnlocked = unlockedLevels
+                          .contains(value.getQuestion[index].level!);
                       final ques = context
                           .read<QuizViewModel>()
                           .findbyLevel(value.getQuestion[index].level!);
