@@ -31,10 +31,20 @@ class RouteName {
   static const uploadQuizScreen = '/upload_quiz_screen';
   // * upload_question_screen
   static const uploadQuestionScreen = '/upload_question_screen';
+  // * about_screen
+  static const aboutScreen = '/about_screen';
+  // * contact_screen
+  static const contactScreen = '/contact_screen';
+  // * rating_screen
+  static const ratingScreen = '/rating_screen';
+  // * registered verification screen
+  static const registeredVerificationScreen = '/registered_verification_screen';
 
   // ! admin screen
   static const adminLoginScreen = '/admin_login_screen';
   static const adminScreen = '/admin_screen';
   static const uploadPdfScreen = '/upload_pdf_screen';
-  
+  static const adminRatingScreen = '/admin_rating_screen';
+  static const contactShow = '/contact_show_screen';
+
 }

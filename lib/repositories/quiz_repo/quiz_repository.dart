@@ -3,7 +3,7 @@ import 'package:quiz_e_book/data/network/network_api_services.dart';
 
 import 'package:quiz_e_book/model/quiz_model.dart';
 import 'package:quiz_e_book/model/qustion.dart';
-import 'package:quiz_e_book/model/users.dart';
+
 import 'package:quiz_e_book/resources/urls/app_url.dart';
 
 class QuizRepository {

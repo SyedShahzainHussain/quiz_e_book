@@ -8,7 +8,9 @@ class AppColors {
   static const white = Color(0xffFFFFFF);
   static const black = Color(0xff000000);
   static const grey = Colors.grey;
-  static const blueGrey = Colors.blueGrey;
+  static const blueGrey = Colors.blueGrey; 
+  static const textfieldcolor = Color(0xffe2e9f1); 
+  static const textColor = Color(0xff708795); 
 
 //! gradient color
   static const darkorane = Color(0xffdd584e);

@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
-import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({
@@ -19,8 +19,6 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  AuthViewModel authViewModel = AuthViewModel();
-
   @override
   void initState() {
     super.initState();
@@ -83,7 +81,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           builder: (BuildContext context) {
             final authViewModel = Provider.of<AuthViewModel>(context);
             final role = authViewModel.loginData?.role;
-            print(role);
             if (role == 'admin') {
               return ListTile(
                 onTap: () {
@@ -96,6 +93,40 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               return const SizedBox.shrink();
             }
           },
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.pop(context);
+            context.push(RouteName.aboutScreen);
+          },
+          title: const Text("About Us"),
+          leading: const FaIcon(FontAwesomeIcons.circleInfo),
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.pop(context);
+            context.push(RouteName.contactScreen);
+          },
+          title: const Text("Contacts Us"),
+          leading: const FaIcon(FontAwesomeIcons.addressCard),
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.pop(context);
+            context.push(RouteName.ratingScreen);
+          },
+          title: const Text("Rating Us"),
+          leading: const FaIcon(FontAwesomeIcons.star),
+        ),
+        ListTile(
+          onTap: () {
+            Navigator.pop(context);
+            Share.share(
+              "https://zain.page.link/home_screen",
+            );
+          },
+          title: const Text("Share App"),
+          leading: const FaIcon(FontAwesomeIcons.share),
         ),
       ]),
     );

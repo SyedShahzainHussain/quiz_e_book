@@ -42,6 +42,20 @@ class AdminDrawerWidget extends StatelessWidget {
         ),
         ListTile(
           onTap: () async {
+            GoRouter.of(context).push(RouteName.adminRatingScreen);
+          },
+          title: const Text("Users Rating"),
+          leading: const Icon(Icons.rate_review_outlined),
+        ),
+        ListTile(
+          onTap: () async {
+            GoRouter.of(context).push(RouteName.contactShow);
+          },
+          title: const Text("Users Contacts"),
+          leading: const Icon(Icons.contact_mail),
+        ),
+        ListTile(
+          onTap: () async {
             GoRouter.of(context).push(RouteName.uploadPdfScreen);
           },
           title: const Text("Upload Pdf"),

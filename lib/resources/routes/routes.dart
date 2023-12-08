@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/admin/add_question/add_questions.dart';
 import 'package:quiz_e_book/admin/admin_screen/admin_screen.dart';
+import 'package:quiz_e_book/admin/contact_show_screen/all_contact_show_screen.dart';
 import 'package:quiz_e_book/admin/login_screen/login_screen.dart';
+import 'package:quiz_e_book/admin/admin_rating_screen/admin_rating_screen.dart';
 import 'package:quiz_e_book/admin/upload_pdf_widget/upload_pdf_widget.dart';
 import 'package:quiz_e_book/admin/upload_quiz/upload_quiz.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
+import 'package:quiz_e_book/view/about_screen/about_screen.dart';
+import 'package:quiz_e_book/view/contact_screen/contact_screen.dart';
 import 'package:quiz_e_book/view/e_book/e_book.dart';
 import 'package:quiz_e_book/view/forgot_password/forgot_password_screen.dart';
 import 'package:quiz_e_book/view/home_screen/home_screen.dart';
@@ -13,6 +17,8 @@ import 'package:quiz_e_book/view/login_screen/login_screen.dart';
 import 'package:quiz_e_book/view/otp_screen.dart/otp_screen.dart';
 import 'package:quiz_e_book/view/quiz_answer/quiz_answer.dart';
 import 'package:quiz_e_book/view/quiz_screen/quiz_screen.dart';
+import 'package:quiz_e_book/view/rating_screen/rating_screen.dart';
+import 'package:quiz_e_book/view/registered_otp_screen/registered_otp_screen.dart';
 import 'package:quiz_e_book/view/registered_screen/registered_screen.dart';
 import 'package:quiz_e_book/view/reset_password_screen/reset_password_screen.dart';
 import 'package:quiz_e_book/view/safe_pdf_screen/save_pdf_screen.dart';
@@ -126,6 +132,30 @@ class AppRoute {
         return const AddQuestionForm();
       },
     ),
+    GoRoute(
+      path: RouteName.aboutScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AboutScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.contactScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const ContactScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.ratingScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const RatingScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.registeredVerificationScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const RegisteredOtpScreen();
+      },
+    ),
 
     // ! admin screen
     GoRoute(
@@ -144,6 +174,18 @@ class AppRoute {
       path: RouteName.uploadPdfScreen,
       builder: (BuildContext context, GoRouterState state) {
         return const UploadPdfWidget();
+      },
+    ),
+    GoRoute(
+      path: RouteName.adminRatingScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AdminRatingScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.contactShow,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AllContactShow();
       },
     ),
   ]);

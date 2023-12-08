@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart';
-import 'package:quiz_e_book/admin/repository/upload_question.dart';
 import 'package:quiz_e_book/model/login_model.dart';
 import 'package:quiz_e_book/model/quiz_model.dart';
 import 'package:quiz_e_book/model/qustion.dart';
@@ -64,12 +63,10 @@ class QuizViewModel with ChangeNotifier {
 
         if (user != null && user['unlocked'] != null) {
           List<dynamic> unlockedLevels = user['unlocked']!;
-          print('unlocked $unlockedLevels');
 
           // Add the unlockedLevels to _allUnlockedArrays
           _allUnlockedArrays.clear();
           _allUnlockedArrays.addAll(unlockedLevels);
-          print('locked $allUnlockedArrays');
 
           // Optionally, you can also update _users with the user
 
@@ -86,7 +83,7 @@ class QuizViewModel with ChangeNotifier {
   // * quiz question
 
   List<Question> _question = [];
-  List<Question> get getQuestion => [..._question];
+  List<Question> get getQuestion => _question;
 
   Future<void> uploadQuestion(
     int? id,
@@ -144,10 +141,16 @@ class QuizViewModel with ChangeNotifier {
     try {
       final snapshot = await QuizRepository().getQuestionData(token!);
       List<Question> question = [];
+
       for (var docs in snapshot) {
         Question questions = Question.fromJson(docs.toJson());
         question.add(questions);
       }
+
+      // Convert level strings to integers for correct sorting
+      question
+          .sort((b, a) => int.parse(b.level!).compareTo(int.parse(a.level!)));
+
       _question = question;
       notifyListeners();
     } catch (e) {
@@ -244,7 +247,6 @@ class QuizViewModel with ChangeNotifier {
       }
     } catch (e) {
       setLoading(false);
-      print("Error checking duplicate levels: $e");
     }
   }
 
@@ -323,9 +325,12 @@ class QuizViewModel with ChangeNotifier {
 
   // * find by level
   List<Question> findbyLevel(String level) {
-    return getQuestion.where((e) => e.level == level).toList();
+    return _question.where((e) => e.level == level).toList();
   }
 
+  List<Question> getQuestionsByLevel(String level) {
+    return _question.where((question) => question.level == level).toList();
+  }
   // * unlocked the first index of quiz level
 
   void updateQuizLocked(String quizId, int length) {
@@ -395,6 +400,10 @@ class QuizViewModel with ChangeNotifier {
     return hiddenIncorrectIndices.contains(indexToCheck);
   }
 
+  isHiddenRemove() {
+    hiddenIncorrectIndices.clear();
+  }
+
   // * check answwer
 
   void checkAns(
@@ -407,6 +416,7 @@ class QuizViewModel with ChangeNotifier {
     String level,
   ) {
     // because once user press any option then it will run
+    print(level);
     _level = level;
     _isAnswered = true;
     _correctAns = int.tryParse(question.answer!);

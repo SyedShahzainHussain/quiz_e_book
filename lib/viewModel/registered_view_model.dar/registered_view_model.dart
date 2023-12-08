@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:quiz_e_book/repositories/registered_repo/registered_repo.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
@@ -46,20 +45,23 @@ class RegisteredViewModel with ChangeNotifier {
     request.files.add(file);
     try {
       var response = await request.send();
+      final responseJson = await response.stream.bytesToString();
+
       if (response.statusCode == 201) {
         setLoading(false);
-        final responseJson = response.stream.bytesToString();
 
         username = '';
         email = '';
         password = '';
         dateofbirth = '';
         image = null;
-        GoRouter.of(context).go(RouteName.loginScreen);
         Utils.flushBarErrorMessage(
           "Registerd SuccessFully",
           context,
         );
+        Future.delayed(const Duration(seconds: 2), () {
+          GoRouter.of(context).push(RouteName.registeredVerificationScreen);
+        });
         if (kDebugMode) {
           print(responseJson);
         }

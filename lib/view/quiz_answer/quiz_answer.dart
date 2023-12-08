@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/data/response/status.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
@@ -43,14 +42,16 @@ class _QuizAnswerState extends State<QuizAnswer>
 
   @override
   void initState() {
+    context.read<QuizViewModel>().createRewardAdd();
+
     super.initState();
     fetchData();
     getUserData()
         .then((value) => {getAllUsers.getUserData(value.token.toString())});
-    context.read<QuizViewModel>().createRewardAdd();
+
     _pageController = PageController();
     animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 60));
+        AnimationController(vsync: this, duration: const Duration(seconds: 25));
     animation = Tween(begin: 0.0, end: 1.0).animate(animationController)
       ..addListener(() {
         setState(() {});
@@ -75,7 +76,7 @@ class _QuizAnswerState extends State<QuizAnswer>
 
   @override
   Widget build(BuildContext context) {
-     animationController.forward().whenComplete(() {
+    animationController.forward().whenComplete(() {
       final ques = context
           .read<QuizViewModel>()
           .getQuestion
@@ -90,8 +91,10 @@ class _QuizAnswerState extends State<QuizAnswer>
     final ques = context.read<QuizViewModel>().findbyLevel(widget.level);
 
     return Scaffold(
-      backgroundColor: AppColors.bgColor,
+      backgroundColor: Color(0xff454fb9),
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Color(0xff454fb9),
         actions: [
           ChangeNotifierProvider(
             create: (BuildContext context) => getSingleUserViewModel,
@@ -115,14 +118,13 @@ class _QuizAnswerState extends State<QuizAnswer>
                       onPressed: () async {
                         final score =
                             getAllUsers.apiresponse.data!['scorrer'] ?? 0;
-                        if (score == 0) {
+                        if (score > 10) {
                           showDialog(
-                            context:
-                                context, // Provide the actual context where you want to show the dialog
+                            context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Zero Score Dialog'),
+                              title: const Text('Confirm Skip'),
                               content: const Text(
-                                  'Your score is zero. you cannot to skip?'),
+                                  'Are you sure you want to skip? Your score will be decreased by 10 points.'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -131,27 +133,62 @@ class _QuizAnswerState extends State<QuizAnswer>
                                   },
                                   child: const Text('Cancel'),
                                 ),
+                                TextButton(
+                                  onPressed: () async {
+                                    // Close the dialog
+                                    Navigator.pop(context);
+
+                                    // Perform the skip operation
+                                    AuthViewModel().getUser().then((value2) {
+                                      int scoreToDecrement = 10;
+                                      final body = {
+                                        "decrementValue":
+                                            scoreToDecrement.toString(),
+                                      };
+                                      context
+                                          .read<ScoreViewModel>()
+                                          .updateScore(
+                                        AppUrl.decrement,
+                                        body,
+                                        context,
+                                        headers: {
+                                          "Authorization":
+                                              "Bearer ${value2.token}",
+                                        },
+                                      ).then((value) {
+                                        // Perform any additional actions after decrementing the score
+                                        quizViewModel.nextQuestion(
+                                          _pageController,
+                                          animationController,
+                                          context,
+                                          ques,
+                                        );
+                                      });
+                                    });
+                                  },
+                                  child: const Text('OK'),
+                                ),
                               ],
                             ),
                           );
                         } else {
-                          AuthViewModel().getUser().then((value2) {
-                            int score = 10;
-                            final body = {
-                              "decrementValue": score.toString(),
-                            };
-                            context.read<ScoreViewModel>().updateScore(
-                                AppUrl.decrement, body, context, headers: {
-                              "Authorization": "Bearer ${value2.token}"
-                            }).then((value) {
-                              quizViewModel.nextQuestion(
-                                _pageController,
-                                animationController,
-                                context,
-                                ques,
-                              );
-                            });
-                          });
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Insufficient Score'),
+                              content: const Text(
+                                  'Your score is not sufficient to skip.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    // Close the dialog
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       },
                       child: const Text("Skip",
@@ -170,6 +207,7 @@ class _QuizAnswerState extends State<QuizAnswer>
       body: WillPopScope(
         onWillPop: () async {
           quizViewModel.updateTheQnNum(0);
+          quizViewModel.isHiddenRemove();
           return true;
         },
         child: SingleChildScrollView(
@@ -245,7 +283,7 @@ class _QuizAnswerState extends State<QuizAnswer>
                   ),
                   const Divider(
                     thickness: 1.5,
-                    color: AppColors.bgColor,
+                    color: AppColors.white,
                   ),
                   const Gap(20),
                   Expanded(
@@ -393,7 +431,13 @@ class _QuizAnswerState extends State<QuizAnswer>
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                        child: const Text("Reward"),
+                        child: Text(
+                          "Reward",
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
                         onPressed: () {
                           quizViewModel.showRewardAdd(
                             ques,

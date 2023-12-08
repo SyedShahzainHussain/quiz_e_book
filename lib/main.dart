@@ -3,19 +3,24 @@ import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quiz_e_book/admin/viewmodel/contact_view_model.dart';
+import 'package:quiz_e_book/admin/viewmodel/delete_contact_view_model.dart';
 import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
 
 // ! file
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/resources/routes/routes.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
+import 'package:quiz_e_book/viewModel/contact_view_model/contact_view_model.dart';
 import 'package:quiz_e_book/viewModel/delete_user_view_model/delete_user_view_model.dart';
+import 'package:quiz_e_book/admin/viewmodel/delete_rating_view_model.dart';
 import 'package:quiz_e_book/viewModel/dynamic_link_view_model/dynamic_link_view_model.dart';
 import 'package:quiz_e_book/viewModel/forgot_password_view_model/forgot_password_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/get_single_user_view_model/get_single_user_view_model.dart';
 import 'package:quiz_e_book/viewModel/login_view_model/login_view_model.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/rating_view_model/rating_view_model.dart';
 import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_model.dart';
 
 // ! package
@@ -28,6 +33,7 @@ import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
 import 'package:quiz_e_book/viewModel/update_level_view_model/update_level_view_model.dart';
 import 'package:quiz_e_book/viewModel/uploadfle_view_model/upload_file_viewModel.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quiz_e_book/viewModel/verify_view_model/verify_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -113,13 +119,30 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (context) => DeleteUserViewModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => ContactViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RatingViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DeleteRatingViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GetContactViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DeleteContactViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => VerifyVewModel(),
+        ),
       ],
       child: MaterialApp.router(
         routerConfig: AppRoute.router,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.bgColor),
           appBarTheme: const AppBarTheme(
             backgroundColor: AppColors.bgColor,
             titleTextStyle: TextStyle(color: AppColors.white),

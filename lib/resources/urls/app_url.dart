@@ -15,4 +15,7 @@ class AppUrl {
   static const decrement = '$baseUrl/scorrer/decrement';
   static const updateLocked = '$baseUrl/updateunlocked';
   static const deelteUser = '$baseUrl/delete/user:';
+  static const contact = '$baseUrl/contact';
+  static const rating = '$baseUrl/rating';
+  static const verify = '$baseUrl/verify';
 }

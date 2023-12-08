@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:quiz_e_book/data/response/api_response.dart';
 import 'package:quiz_e_book/model/login_model.dart';
-import 'package:quiz_e_book/model/users.dart';
+
 import 'package:quiz_e_book/repositories/get_single_user/get_single_user.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 
@@ -24,7 +24,7 @@ class GetSingleUserViewModel with ChangeNotifier {
           .getSingleUser({"Authorization": "Bearer $token"}, loginData.sId!);
 
       setUserList(ApiResponse.complete(userMap));
-    } catch (error, stackTrace) {
+    } catch (error, _) {
       if (kDebugMode) {
         print(error.toString());
       }
