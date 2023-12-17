@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           List<Users> thirdUser = lowPercentageUsers.length > 2
                               ? [lowPercentageUsers[2]]
                               : mediumPercentageUsers.length > 1
-                                  ? [mediumPercentageUsers[1]]
+                                  ? [mediumPercentageUsers[2]]
                                   : lowPercentageUsers.isNotEmpty
                                       ? [lowPercentageUsers.first]
                                       : [];
