@@ -13,9 +13,12 @@ class AppUrl {
   static const singleUser = '$baseUrl/user';
   static const increment = '$baseUrl/scorrer/increment';
   static const decrement = '$baseUrl/scorrer/decrement';
-  static const updateLocked = '$baseUrl/updateunlocked';
+  static const updateLocked = '$baseUrl/unlocked';
   static const deelteUser = '$baseUrl/delete/user:';
   static const contact = '$baseUrl/contact';
   static const rating = '$baseUrl/rating';
   static const verify = '$baseUrl/verify';
+  static const createCategory = '$baseUrl/category';
+  static const getCategory = '$baseUrl/category';
+  static const selectedCategory = "$baseUrl/quiz";
 }

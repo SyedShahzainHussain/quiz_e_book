@@ -68,7 +68,6 @@ class RegisteredOtpScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: OtpTextField(
-                      keyboardType: TextInputType.text,
                       numberOfFields: 6,
                       borderColor: AppColors.bgColor,
                       enabled: true,

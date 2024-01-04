@@ -1,15 +1,13 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_e_book/data/services/permission/media_services.dart';
-import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
+import 'package:quiz_e_book/admin/viewmodel/get_category_view_model.dart';
+import 'package:quiz_e_book/data/response/status.dart';
 import 'package:quiz_e_book/model/login_model.dart';
-
+import 'package:quiz_e_book/model/quiz_model.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
+import 'package:quiz_e_book/utils/utils.dart';
+
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
 import 'package:quiz_e_book/widget/button_widget.dart';
@@ -24,74 +22,39 @@ class UploadQuiz extends StatefulWidget {
 
 class _UploadQuizState extends State<UploadQuiz> {
   Future<LoginData> getUserData() => AuthViewModel().getUser();
+  GetCategoryViewModel getCategoryViewModel = GetCategoryViewModel();
 
   final _form = GlobalKey<FormState>();
   String? level;
+  String? dropdownvalue;
+
+  @override
+  void initState() {
+    super.initState();
+    getCategoryViewModel.getCategory();
+  }
 
   void save() async {
     final validate = _form.currentState!.validate();
     if (!validate) return;
-    if (validate && image != null) {
+    if (validate && dropdownvalue != null) {
       _form.currentState!.save();
       getUserData().then((value) {
-        print(value.token);
-        context.read<QuizViewModel>().uploadQuiz(
-              image,
-              context,
-              level!,
-              value.token!,
-              true,
-            );
+        // Check if quiz with the same title and level already exists
+        if (!context
+            .read<QuizViewModel>()
+            .quizAlreadyExists(title: dropdownvalue!, level: level!)) {
+          context
+              .read<QuizViewModel>()
+              .uploadQuiz(context, level!, value.token!, true, dropdownvalue!);
+        } else {
+          // Show an error message or handle the case where the quiz already exists
+          // For example, you can show a dialog or print a message
+          Utils.flushBarErrorMessage(
+              "Quiz with the same title and level already exists", context);
+        }
       });
     }
-  }
-
-  File? image;
-
-  Future<Uint8List?> showImage(ImageSource imageSource) async {
-    var file = await MediaService.uploadImage2(context, imageSource);
-    setState(() {
-      image = file;
-    });
-    return null;
-  }
-
-  void showModel() {
-    showModalBottomSheet(
-      backgroundColor: AppColors.bgColor,
-      context: context,
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColors.white),
-              onTap: () {
-                showImage(
-                  ImageSource.gallery,
-                );
-                Navigator.of(context).pop();
-              },
-              title: const Text(
-                "Choose from gallery",
-                style: TextStyle(color: AppColors.white),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera_alt, color: AppColors.white),
-              onTap: () {
-                showImage(ImageSource.camera);
-                Navigator.of(context).pop();
-              },
-              title: const Text(
-                "Choose from camera",
-                style: TextStyle(color: AppColors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -129,40 +92,42 @@ class _UploadQuizState extends State<UploadQuiz> {
                     return null;
                   }),
               const Gap(20),
-              Row(
-                children: [
-                  Flexible(
-                    child: Container(
-                      height: context.screenheight * .2,
-                      width: context.screenwidth * .4,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppColors.bgColor3,
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(5.0)),
-                      child: Center(
-                        child: image == null
-                            ? const Text("No Image")
-                            : Image.file(
-                                File(image!.path),
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                              ),
-                      ),
-                    ),
-                  ),
-                  const Gap(10),
-                  Expanded(
-                    child: Buttonwidget(
-                      text: "Quiz Image",
-                      onTap: () {
-                        showModel();
-                      },
-                    ),
-                  )
-                ],
+              ChangeNotifierProvider(
+                create: (context) => getCategoryViewModel,
+                child: Consumer<GetCategoryViewModel>(
+                    builder: (context, value, _) {
+                  switch (value.apiResponse.status) {
+                    case Status.loading:
+                      return const Text("Loading...");
+                    case Status.error:
+                      return Text(value.apiResponse.message!);
+                    case Status.completed:
+                      return DropdownButton(
+                        elevation: 10,
+                        underline: Container(
+                          height: 3,
+                          color: AppColors.bgColor,
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                        isExpanded: true,
+                        value: dropdownvalue,
+                        hint: const Text("Selected Category"),
+                        items: value.apiResponse.data!
+                            .map((e) => DropdownMenuItem(
+                                  value: e.title,
+                                  child: Text(e.title!),
+                                ))
+                            .toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            dropdownvalue = newValue.toString();
+                          });
+                        },
+                      );
+                    default:
+                      return const SizedBox.shrink();
+                  }
+                }),
               ),
               const Gap(10),
               Consumer<QuizViewModel>(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quiz_e_book/admin/add_category/add_category.dart';
 import 'package:quiz_e_book/admin/add_question/add_questions.dart';
 import 'package:quiz_e_book/admin/admin_screen/admin_screen.dart';
 import 'package:quiz_e_book/admin/contact_show_screen/all_contact_show_screen.dart';
@@ -9,6 +10,7 @@ import 'package:quiz_e_book/admin/upload_pdf_widget/upload_pdf_widget.dart';
 import 'package:quiz_e_book/admin/upload_quiz/upload_quiz.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/view/about_screen/about_screen.dart';
+import 'package:quiz_e_book/view/category_screen/category_screen.dart';
 import 'package:quiz_e_book/view/contact_screen/contact_screen.dart';
 import 'package:quiz_e_book/view/e_book/e_book.dart';
 import 'package:quiz_e_book/view/forgot_password/forgot_password_screen.dart';
@@ -23,6 +25,7 @@ import 'package:quiz_e_book/view/registered_screen/registered_screen.dart';
 import 'package:quiz_e_book/view/reset_password_screen/reset_password_screen.dart';
 import 'package:quiz_e_book/view/safe_pdf_screen/save_pdf_screen.dart';
 import 'package:quiz_e_book/view/scorescreen/score_screen.dart';
+import 'package:quiz_e_book/view/selected_category/selected_category.dart';
 import 'package:quiz_e_book/view/splash_screen/splash_screen.dart';
 import 'package:quiz_e_book/view/user_profile_screen.dart/user_profile_screen.dart';
 
@@ -108,16 +111,19 @@ class AppRoute {
     GoRoute(
       path: RouteName.quizAnswerScreen,
       builder: (BuildContext context, GoRouterState state) {
-        final String quizid = state.extra as String;
+        final Map<String, dynamic> data = state.extra as Map<String, dynamic>;
         return QuizAnswer(
-          level: quizid,
+          data: data,
         );
       },
     ),
     GoRoute(
       path: RouteName.scoreScreen,
       builder: (BuildContext context, GoRouterState state) {
-        return const ScoreScreen();
+        final String title = state.extra as String;
+        return ScoreScreen(
+          title: title,
+        );
       },
     ),
     GoRoute(
@@ -156,6 +162,21 @@ class AppRoute {
         return const RegisteredOtpScreen();
       },
     ),
+    GoRoute(
+      path: RouteName.categoriesScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const CategoriseScreen();
+      },
+    ),
+    GoRoute(
+      path: RouteName.selectedCategory,
+      builder: (BuildContext context, GoRouterState state) {
+        final String title = state.extra as String;
+        return SelectedCategory(
+          title: title,
+        );
+      },
+    ),
 
     // ! admin screen
     GoRoute(
@@ -186,6 +207,12 @@ class AppRoute {
       path: RouteName.contactShow,
       builder: (BuildContext context, GoRouterState state) {
         return const AllContactShow();
+      },
+    ),
+    GoRoute(
+      path: RouteName.categoryScreen,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddCategory();
       },
     ),
   ]);

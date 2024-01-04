@@ -39,6 +39,11 @@ class RouteName {
   static const ratingScreen = '/rating_screen';
   // * registered verification screen
   static const registeredVerificationScreen = '/registered_verification_screen';
+  // * categories_screen
+  static const categoriesScreen = "/categories_screen";
+  // * selcted_category
+  static const selectedCategory = "/selected_categories_screen";
+
 
   // ! admin screen
   static const adminLoginScreen = '/admin_login_screen';
@@ -46,5 +51,6 @@ class RouteName {
   static const uploadPdfScreen = '/upload_pdf_screen';
   static const adminRatingScreen = '/admin_rating_screen';
   static const contactShow = '/contact_show_screen';
+  static const categoryScreen = '/category_screen';
 
 }

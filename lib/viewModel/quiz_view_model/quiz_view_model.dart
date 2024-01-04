@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +14,6 @@ import 'package:quiz_e_book/repositories/quiz_repo/quiz_repository.dart';
 import 'package:quiz_e_book/resources/routes/route_name/route_name.dart';
 import 'package:quiz_e_book/resources/urls/app_url.dart';
 import 'package:quiz_e_book/utils/utils.dart';
-import 'package:http_parser/src/media_type.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 
 class QuizViewModel with ChangeNotifier {
@@ -52,26 +50,35 @@ class QuizViewModel with ChangeNotifier {
   List<Users> get getUsers => _users;
   List<dynamic> _allUnlockedArrays = [];
   List<dynamic> get allUnlockedArrays => _allUnlockedArrays;
-
-  Future<void> getAllUser() async {
+  bool _isLevelUnlocked = false;
+  get islevelUnlocked => _isLevelUnlocked;
+  Future<void> getAllUser(String type) async {
     try {
       final value = await getUserData();
 
-      if (value != null) {
-        final user =
-            await QuizRepository().getSIngleData(value.token!, value.sId!);
+      final user =
+          await QuizRepository().getSIngleData(value.token!, value.sId!);
 
-        if (user != null && user['unlocked'] != null) {
-          List<dynamic> unlockedLevels = user['unlocked']!;
+      if (user['unlocked'] != null) {
+        List<dynamic> unlockedLevels = user['unlocked']!;
 
-          // Add the unlockedLevels to _allUnlockedArrays
-          _allUnlockedArrays.clear();
-          _allUnlockedArrays.addAll(unlockedLevels);
-
-          // Optionally, you can also update _users with the user
-
-          notifyListeners();
+        // Add the unlockedLevels to _allUnlockedArrays
+        _allUnlockedArrays.clear();
+        for (var unlockedLevel in unlockedLevels) {
+          // Check if the type is "Math"
+          if (unlockedLevel['type'] == type) {
+            if (unlockedLevel['values'].contains(1)) {
+              _isLevelUnlocked = true;
+            }
+            // Add the values of the "Math" type to _allUnlockedArrays
+            _allUnlockedArrays.addAll(unlockedLevel['values']);
+            break; // Break the loop once you find the desired type
+          }
         }
+
+        // Optionally, you can also update _users with the user
+
+        notifyListeners();
       }
     } catch (e) {
       if (kDebugMode) {
@@ -91,6 +98,7 @@ class QuizViewModel with ChangeNotifier {
     List<String> options,
     String answer,
     String? level,
+    String? title,
     BuildContext context,
   ) async {
     setLoading2(true);
@@ -102,6 +110,7 @@ class QuizViewModel with ChangeNotifier {
           "question": question,
           "options": options,
           "answer": answer.toString(),
+          "title": title.toString(),
         };
 
         String bodyAsString = json.encode(body);
@@ -118,7 +127,7 @@ class QuizViewModel with ChangeNotifier {
         if (response.statusCode == 201) {
           setLoading2(false);
           Utils.flushBarErrorMessage(
-            "Quiz Created Successfully",
+            "Question Created Successfully",
             context,
           );
           Future.delayed(const Duration(seconds: 1), () {
@@ -160,14 +169,38 @@ class QuizViewModel with ChangeNotifier {
     }
   }
 
+  // Inside QuizViewModel class
+  List<Question>? getSpecificQuestion(String level, String title) {
+    // Add your logic to get the specific question
+    return getQuestionsByLevel(level, title);
+  }
+
+  List<Question> getQuestionsByLevel(String level, String title) {
+    var result = _question
+        .where((question) => question.level == level && question.title == title)
+        .toList();
+    return result;
+  }
   // * quiz level
 
   List<Quiz> get getQuiz => [..._quiz];
+
   List<Quiz> _quiz = [];
 
-  Future<void> getProducts(BuildContext context) async {
+  // checking the level is already exits
+  bool quizAlreadyExists({required String title, required String level}) {
+    // Assuming _quiz is a list of quizzes fetched previously
+    for (Quiz quiz in _quiz) {
+      if (quiz.title == title && quiz.level == level) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<void> getProducts(BuildContext context, String title) async {
     try {
-      final snapshot = await QuizRepository().getQuizData(token!);
+      final snapshot = await QuizRepository().getQuizData(token!, title);
       List<Quiz> quizs = [];
       for (var docs in snapshot) {
         Quiz quiz = Quiz.fromJson(docs.toJson());
@@ -202,52 +235,49 @@ class QuizViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> uploadQuiz(File? image, BuildContext context, String level,
-      String token, bool isTrue) async {
-    setLoading(true);
-    final request = MultipartRequest('POST', Uri.parse(AppUrl.createQuiz));
-    request.fields['level'] = level;
-    request.fields['isLoacked'] = isTrue.toString();
-    request.headers['Authorization'] = 'Bearer $token';
-    var file = await MultipartFile.fromPath(
-      "image",
-      image!.path,
-      filename: "quiz_image.jpg",
-      contentType: MediaType("image", "jpg"),
-    );
-    request.files.add(file);
-    try {
-      var response = await request.send();
-      if (response.statusCode == 201) {
-        setLoading(false);
-        final responseJson = await response.stream.bytesToString();
-        level = '';
-        image = null;
-        Utils.flushBarErrorMessage(
-          "Quiz Create SuccessFully",
-          context,
-        );
-        Future.delayed(const Duration(seconds: 3), () {
-          GoRouter.of(context).go(RouteName.homeScreen);
-        });
-        if (kDebugMode) {
-          print(responseJson);
-        }
-      } else if (response.statusCode == 400) {
-        final errorResponse = await response.stream.bytesToString();
-        final errorJson = jsonDecode(errorResponse);
-        final errorMessage =
-            errorJson['error'] ?? 'An unexpected error occurred';
+  // upload quiz
 
-        Utils.flushBarErrorMessage(errorMessage, context);
+  Future<void> uploadQuiz(
+    BuildContext context,
+    String level,
+    String token,
+    bool isTrue,
+    String title,
+  ) async {
+    setLoading(true);
+    AuthViewModel().getUser().then((value) async {
+      try {
+        var body = {
+          "level": level,
+          "isLoacked": isTrue.toString(),
+          "title": title
+        };
+        String bodyAsString = json.encode(body);
+        final response = await post(
+          Uri.parse(AppUrl.createQuiz),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${value.token}',
+          },
+          body: bodyAsString,
+        );
+        if (response.statusCode == 201) {
+          setLoading(false);
+          Utils.flushBarErrorMessage(
+            "Quiz Created Successfully",
+            context,
+          );
+          Future.delayed(const Duration(seconds: 1), () {
+            context.go(RouteName.homeScreen);
+          });
+        } else {
+          throw Exception('Failed to upload question');
+        }
+      } catch (e) {
         setLoading(false);
-      } else {
-        setLoading(false);
-        Utils.flushBarErrorMessage(response.reasonPhrase.toString(), context);
+        Utils.flushBarErrorMessage(e.toString(), context);
       }
-    } catch (e) {
-      setLoading(false);
-    }
+    });
   }
 
   // * unlocked levels
@@ -324,13 +354,13 @@ class QuizViewModel with ChangeNotifier {
   }
 
   // * find by level
-  List<Question> findbyLevel(String level) {
-    return _question.where((e) => e.level == level).toList();
+
+  List<Question> findbyLevel(String level, String title) {
+    return _question
+        .where((e) => e.level == level && e.title == title)
+        .toList();
   }
 
-  List<Question> getQuestionsByLevel(String level) {
-    return _question.where((question) => question.level == level).toList();
-  }
   // * unlocked the first index of quiz level
 
   void updateQuizLocked(String quizId, int length) {
@@ -348,8 +378,9 @@ class QuizViewModel with ChangeNotifier {
 
   // * checking question are available for that level
 
-  bool areQuestionsAvailableForLevel(String level) {
-    return getQuestion.any((question) => question.level == level);
+  bool areQuestionsAvailableForLevel(String level, String title) {
+    return getQuestion
+        .any((question) => question.level == level && question.title == title);
   }
 
   bool _isAnswered = false;
@@ -414,9 +445,10 @@ class QuizViewModel with ChangeNotifier {
     BuildContext context,
     List<Question> ques,
     String level,
+    String title,
   ) {
     // because once user press any option then it will run
-    print(level);
+
     _level = level;
     _isAnswered = true;
     _correctAns = int.tryParse(question.answer!);
@@ -434,6 +466,7 @@ class QuizViewModel with ChangeNotifier {
         animationController,
         context,
         ques,
+        title,
       );
     });
     animationController.forward().whenComplete(() => nextQuestion(
@@ -441,6 +474,7 @@ class QuizViewModel with ChangeNotifier {
           animationController,
           context,
           ques,
+          title,
         ));
   }
 
@@ -451,6 +485,7 @@ class QuizViewModel with ChangeNotifier {
     AnimationController animationController,
     BuildContext context,
     List<Question> ques,
+    String? title,
   ) {
     if (_questionNumber != ques.length) {
       hiddenIncorrectIndices = [];
@@ -465,9 +500,10 @@ class QuizViewModel with ChangeNotifier {
             animationController,
             context,
             ques,
+            title,
           ));
     } else {
-      GoRouter.of(context).push(RouteName.scoreScreen);
+      GoRouter.of(context).push(RouteName.scoreScreen, extra: title);
       hiddenIncorrectIndices = [];
       _questionNumber = 1;
       _isAnswered = false;
@@ -479,10 +515,15 @@ class QuizViewModel with ChangeNotifier {
 
   // ! advertising
 
+  bool isAdLoading = false;
+
   RewardedAd? rewardedAd;
   // * load the  reward add
 
   void createRewardAdd() {
+    isAdLoading = true;
+    notifyListeners();
+
     RewardedAd.load(
       adUnitId: 'ca-app-pub-3940256099942544/5224354917',
       request:
@@ -490,10 +531,12 @@ class QuizViewModel with ChangeNotifier {
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           rewardedAd = ad;
+          isAdLoading = false;
           notifyListeners();
         },
         onAdFailedToLoad: (error) {
           rewardedAd = null;
+
           notifyListeners();
           if (kDebugMode) {
             print("Failed $error");

@@ -1,6 +1,7 @@
 class Quiz {
   String? id;
   String? image;
+  String? title;
   String? level;
   bool isLoacked = true;
 
@@ -9,6 +10,8 @@ class Quiz {
     required this.image,
     required this.level,
     required this.isLoacked,
+    required this.title,
+
   });
 
   Map<String, dynamic> toJson() {
@@ -17,6 +20,7 @@ class Quiz {
     json['image'] = image;
     json['level'] = level;
     json['isLoacked'] = isLoacked;
+    json['title'] = title;
     return json;
   }
 
@@ -25,5 +29,6 @@ class Quiz {
     image = json['image'];
     level = json['level'];
     isLoacked = json['isLoacked'];
+    title = json['title'];
   }
 }

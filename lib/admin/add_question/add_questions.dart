@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_e_book/admin/viewmodel/get_category_view_model.dart';
+import 'package:quiz_e_book/data/response/status.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
 import 'package:quiz_e_book/utils/utils.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
@@ -27,8 +29,17 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
   final TextEditingController optionsController = TextEditingController();
   final TextEditingController answerController = TextEditingController();
   final _form = GlobalKey<FormState>();
+  GetCategoryViewModel getCategoryViewModel = GetCategoryViewModel();
 
-  String? dropdownvalue = "0";
+  @override
+  void initState() {
+    super.initState();
+    getCategoryViewModel.getCategory();
+  }
+
+  String? dropdownvalue;
+  String? categoryValue;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,10 +120,6 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
                     isExpanded: true,
                     padding: const EdgeInsets.all(8.0),
                     items: [
-                      const DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text('Select an option'),
-                      ),
                       ...items.map((String item) {
                         int internalValue =
                             int.parse(item) - 1; // Adjust the internal value
@@ -126,8 +133,45 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
                       setState(() {
                         dropdownvalue = value!;
                       });
-                      print(dropdownvalue);
                     }),
+                const Gap(10),
+                ChangeNotifierProvider(
+                  create: (context) => getCategoryViewModel,
+                  child: Consumer<GetCategoryViewModel>(
+                      builder: (context, value, _) {
+                    switch (value.apiResponse.status) {
+                      case Status.loading:
+                        return const Text("Loading...");
+                      case Status.error:
+                        return Text(value.apiResponse.message!);
+                      case Status.completed:
+                        return DropdownButton(
+                          elevation: 10,
+                          underline: Container(
+                            height: 3,
+                            color: AppColors.bgColor,
+                          ),
+                          padding: const EdgeInsets.all(8.0),
+                          isExpanded: true,
+                          value: categoryValue,
+                          hint: const Text("Selected Category"),
+                          items: value.apiResponse.data!
+                              .map((e) => DropdownMenuItem(
+                                    value: e.title,
+                                    child: Text(e.title!),
+                                  ))
+                              .toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              categoryValue = newValue.toString();
+                            });
+                          },
+                        );
+                      default:
+                        return const SizedBox.shrink();
+                    }
+                  }),
+                ),
                 const Gap(10),
                 Consumer<QuizViewModel>(
                   builder: (context, value, _) => Buttonwidget(
@@ -154,7 +198,10 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
         .map((option) => option.trim()) // Trim each option
         .where((option) => option.isNotEmpty)
         .toList();
-    if (validate && questionOptions.length == 4 && dropdownvalue != null) {
+    if (validate &&
+        questionOptions.length == 4 &&
+        dropdownvalue != null &&
+        categoryValue != null) {
       _form.currentState!.save();
 
       context
@@ -165,6 +212,7 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
             questionOptions,
             dropdownvalue!,
             levelController.text,
+            categoryValue,
             context,
           )
           .then((value) {
@@ -174,6 +222,7 @@ class _AddQuestionFormState extends State<AddQuestionForm> {
         optionsController.clear();
         answerController.clear();
         dropdownvalue = null;
+        categoryValue = null;
       });
     } else if (dropdownvalue == null) {
       // Handle the case where dropdownvalue is null

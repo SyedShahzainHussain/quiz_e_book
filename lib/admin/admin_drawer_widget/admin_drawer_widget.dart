@@ -63,6 +63,13 @@ class AdminDrawerWidget extends StatelessWidget {
         ),
         ListTile(
           onTap: () async {
+            GoRouter.of(context).push(RouteName.categoryScreen);
+          },
+          title: const Text("Add Category"),
+          leading: const Icon(Icons.category),
+        ),
+        ListTile(
+          onTap: () async {
             GoRouter.of(context).push(RouteName.uploadQuizScreen);
           },
           title: const Text("Upload Quiz Level"),

@@ -9,8 +9,8 @@ import 'package:quiz_e_book/resources/urls/app_url.dart';
 class QuizRepository {
   final BaseApiServices baseApiServices = NetworkApiServices();
 
-  Future<List<Quiz>> getQuizData(String token) async {
-    dynamic response = await baseApiServices.getGetApiResponse(AppUrl.getQuiz,
+  Future<List<Quiz>> getQuizData(String token,String title) async {
+    dynamic response = await baseApiServices.getGetApiResponse("${AppUrl.selectedCategory}?title=$title&sort=title",
         headers: {"Authorization": "Bearer $token"});
 
     var data = response as List;

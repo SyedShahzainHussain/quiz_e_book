@@ -56,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-
     fetchData();
     super.initState();
 
@@ -102,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         image: "assets/images/quiz.jpg",
                         title: "Quiz",
                         onTap: () {
-                          GoRouter.of(context).push(RouteName.quizScreen);
+                          GoRouter.of(context).push(RouteName.categoriesScreen);
                         }),
                     QuizAndEbookWidget(
                         image: "assets/images/e-book.jpg",
@@ -128,44 +127,32 @@ class _HomeScreenState extends State<HomeScreen> {
                         case Status.completed:
                           List<Users> sortedUsers =
                               List.from(value.apiresponse.data!);
-                          sortedUsers
-                              .sort((a, b) => b.scorrer!.compareTo(a.scorrer!));
+                          sortedUsers.sort(
+                            (a, b) => b.scorrer!.compareTo(a.scorrer!),
+                          );
 
                           List<Users> highPercentageUsers = sortedUsers
-                              .where((user) => user.scorrer! >= 100)
+                              .where((user) => user.scorrer! >= 200)
                               .toList();
+
                           List<Users> mediumPercentageUsers = sortedUsers
                               .where((user) =>
-                                  user.scorrer! >= 70 && user.scorrer! < 100)
+                                  user.scorrer! >= 100 && user.scorrer! < 200)
                               .toList();
                           List<Users> lowPercentageUsers = sortedUsers
                               .where((user) =>
-                                  user.scorrer! >= 50 && user.scorrer! < 70)
+                                  user.scorrer! >= 50 && user.scorrer! < 100)
                               .toList();
 
-                          // Take the top user from each category
-                          List<Users> topUser = highPercentageUsers.isNotEmpty
-                              ? [highPercentageUsers.first]
-                              : lowPercentageUsers.isNotEmpty
-                                  ? [lowPercentageUsers.first]
-                                  : [];
-
+                          // Select top users from each category
+                          List<Users> topUser =
+                              highPercentageUsers.take(1).toList();
                           List<Users> secondUser =
-                              mediumPercentageUsers.isNotEmpty
-                                  ? [mediumPercentageUsers.first]
-                                  : lowPercentageUsers.length > 1
-                                      ? [lowPercentageUsers[1]]
-                                      : [];
+                              mediumPercentageUsers.take(1).toList();
+                          List<Users> thirdUser =
+                              lowPercentageUsers.take(1).toList();
 
-                          List<Users> thirdUser = lowPercentageUsers.length > 2
-                              ? [lowPercentageUsers[2]]
-                              : mediumPercentageUsers.length > 1
-                                  ? [mediumPercentageUsers[2]]
-                                  : lowPercentageUsers.isNotEmpty
-                                      ? [lowPercentageUsers.first]
-                                      : [];
-
-                          // Combine the users in the desired order
+                          // ! Combine the users in the desired order
                           List<Users> topThreeUsers =
                               topUser + secondUser + thirdUser;
 
@@ -177,28 +164,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                       MainAxisAlignment.spaceBetween,
                                   children: topThreeUsers.map((user) {
                                     final index = topThreeUsers.indexOf(user);
-                                    final isCentered = index == 0;
-
+                                    double height;
                                     int? position;
+                                    // ! set the height of the positioned  and also set the positioned number by index
                                     switch (index) {
                                       case 0:
-                                        position =
-                                            1; // Set to 2 if centered, else 1
+                                        position = 1;
+                                        height = context.screenheight * .2;
+
                                         break;
                                       case 1:
-                                        position =
-                                            2; // Always set to 1 for the centered user
+                                        position = 2;
+                                        height = context.screenheight * 0.17;
                                         break;
                                       case 2:
-                                        position =
-                                            3; // Set to 2 if centered, else 3
+                                        position = 3;
+                                        height = height =
+                                            context.screenheight * 0.14;
                                         break;
+                                      default:
+                                        position = null;
+                                        height = 0.0;
                                     }
+
                                     return PositionHolderWidget(
-                                      height: isCentered
-                                          ? context.screenheight *
-                                              .2 // Adjust the factor as needed
-                                          : context.screenheight * 0.15,
+                                      height: height,
                                       width: context.screenwidth * .3,
                                       position: position.toString(),
                                       winnername: user.username!,

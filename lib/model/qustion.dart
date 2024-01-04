@@ -7,8 +7,9 @@ class Question {
   String? answer; // The correct answer to the question
   String? createdAt; // Timestamp indicating when the question was created
   String? updatedAt; // Timestamp indicating when the question was last updated
-  int? iV; // Version number (__v) field in your JSON (used for concurrency control)
-
+  int?
+      iV; // Version number (__v) field in your JSON (used for concurrency control)
+  String? title;
   // Constructor for creating a Question object
   Question({
     this.sId,
@@ -20,6 +21,7 @@ class Question {
     this.createdAt,
     this.updatedAt,
     this.iV,
+    this.title,
   });
 
   // Factory method for creating a Question object from JSON data
@@ -34,6 +36,7 @@ class Question {
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
       iV: json['__v'],
+      title: json['title'],
     );
   }
 
@@ -49,6 +52,7 @@ class Question {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       '__v': iV,
+      'title': title,
     };
   }
 }

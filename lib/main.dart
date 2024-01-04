@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:quiz_e_book/admin/viewmodel/category_view_model.dart';
 import 'package:quiz_e_book/admin/viewmodel/contact_view_model.dart';
 import 'package:quiz_e_book/admin/viewmodel/delete_contact_view_model.dart';
+import 'package:quiz_e_book/admin/viewmodel/get_category_view_model.dart';
 import 'package:quiz_e_book/data/services/splash_services.dart/splash_services.dart';
 
 // ! file
@@ -136,6 +138,12 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => VerifyVewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CategoryViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GetCategoryViewModel(),
         ),
       ],
       child: MaterialApp.router(
