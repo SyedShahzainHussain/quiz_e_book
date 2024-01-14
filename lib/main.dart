@@ -29,6 +29,7 @@ import 'package:quiz_e_book/viewModel/registered_view_model.dar/registered_view_
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_e_book/viewModel/reset_view_model/reset_view_model.dart';
+import 'package:quiz_e_book/viewModel/reward_add/reward_add.dart';
 import 'package:quiz_e_book/viewModel/save_pdf_view_model/save_pdf_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:quiz_e_book/viewModel/score_view_model/score_view_model.dart';
@@ -144,6 +145,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (context) => GetCategoryViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RewardAdd(),
         ),
       ],
       child: MaterialApp.router(

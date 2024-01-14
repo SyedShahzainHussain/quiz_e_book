@@ -12,6 +12,7 @@ import 'package:quiz_e_book/utils/utils.dart';
 import 'package:quiz_e_book/viewModel/auth_view_model/auth_view_model.dart';
 import 'package:quiz_e_book/viewModel/getAllUsers/get_all_users.dart';
 import 'package:quiz_e_book/viewModel/quiz_view_model/quiz_view_model.dart';
+import 'package:quiz_e_book/viewModel/reward_add/reward_add.dart';
 import 'package:quiz_e_book/widget/Score_widget.dart';
 
 import 'package:quiz_e_book/widget/drawer_widget.dart';
@@ -58,7 +59,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     fetchData();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
 
+    context.read<RewardAdd>().createReward();
+    });
     context.read<QuizViewModel>().getToken();
   }
 

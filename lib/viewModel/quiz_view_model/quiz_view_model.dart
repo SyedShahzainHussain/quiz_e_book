@@ -516,11 +516,12 @@ class QuizViewModel with ChangeNotifier {
   // ! advertising
 
   bool isAdLoading = false;
-
+  bool get isAddsLoading => isAdLoading;
   RewardedAd? rewardedAd;
   // * load the  reward add
 
   void createRewardAdd() {
+    
     isAdLoading = true;
     notifyListeners();
 
@@ -535,6 +536,7 @@ class QuizViewModel with ChangeNotifier {
           notifyListeners();
         },
         onAdFailedToLoad: (error) {
+           isAdLoading = false;
           rewardedAd = null;
 
           notifyListeners();

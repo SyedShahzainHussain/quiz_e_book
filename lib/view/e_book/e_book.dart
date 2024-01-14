@@ -2,14 +2,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:quiz_e_book/extension/mediaquery_extension/mediaquery_extension.dart';
 import 'package:quiz_e_book/utils/utils.dart';
+import 'package:quiz_e_book/viewModel/reward_add/reward_add.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_e_book/resources/color/app_color.dart';
@@ -27,10 +26,23 @@ class Ebook extends StatefulWidget {
 
 class _EbookState extends State<Ebook> {
   @override
-  Widget build(BuildContext context) {
-    // var inputFormat = DateFormat('dd/MM/yyyy');
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      showAdd();
+    });
+  }
 
-    // DateTime myDate = DateTime.parse(DateTime.now().toString());
+  Future showAdd() async {
+    if (mounted) {
+      await context.read<RewardAdd>().createReward().then((value) {
+        context.read<RewardAdd>().showRewarAdd();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ebook"),
@@ -200,7 +212,7 @@ class PdfViewScreen extends StatefulWidget {
 class _PdfViewScreenState extends State<PdfViewScreen> {
   late PdfViewerController _pdfViewerController;
   final GlobalKey<SfPdfViewerState> _pdfViewerState = GlobalKey();
-  bool _isLoading = true;
+  final bool _isLoading = true;
   File? pdf;
   @override
   void initState() {

@@ -18,12 +18,13 @@ class RegisteredOtpScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-            title: const Text(
-          "Back",
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
+          title: const Text(
+            "Back",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        )),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
