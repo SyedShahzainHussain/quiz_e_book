@@ -60,8 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchData();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-
-    context.read<RewardAdd>().createReward();
+      context.read<RewardAdd>().createReward();
     });
     context.read<QuizViewModel>().getToken();
   }
